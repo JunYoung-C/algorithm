@@ -78,6 +78,7 @@ public class ChainHashTester {
 		do {
 			switch (menu = SelectMenu()) {
 			case ADD :
+				data = new Data();
 				data.scanData("추가", Data.NO | Data.NAME);
 				hash.add(data.keyCode(), data);
 				break;
