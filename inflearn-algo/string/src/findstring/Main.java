@@ -7,16 +7,17 @@ public class Main {
     int answer = 0;
     str = str.toUpperCase();
     t = Character.toUpperCase(t);
-    // System.out.println(str + " " + t);
-//    for (int i = 0; i < str.length(); i++) {
-//      if (str.charAt(i) == t) {
-//        answer++;
-//      }
-//    }
-    for (char c : str.toCharArray()) {
-      if (c == t)
+
+    for (int i = 0; i < str.length(); i++) {
+      if (str.charAt(i) == t) {
         answer++;
+      }
     }
+//    향상된 for문
+//    for (char c : str.toCharArray()) {
+//      if (c == t)
+//        answer++;
+//    }
     return answer;
   }
 
@@ -27,5 +28,4 @@ public class Main {
     char c = stdIn.next().charAt(0);
     System.out.print(T.solution(str, c));
   }
-
 }
