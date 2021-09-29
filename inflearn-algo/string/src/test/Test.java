@@ -1,12 +1,13 @@
 package test;
 
+import java.util.ArrayList;
+
 public class Test {
 
   public static void main(String[] args) {
-    int m = Integer.MIN_VALUE, pos;
-    String str = "it is name";
-    System.out.println(str.indexOf(" "));
-
+    String[] str = new String[3];
+    ArrayList<String> answer = new ArrayList<>();
+    
+    
   }
-
 }
