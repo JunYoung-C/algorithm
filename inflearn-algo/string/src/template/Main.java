@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 public class Main {
 
-  public int solution() {
-      int i = 0;
+  public String solution() {
+      String answer = "";
       
-      return i;
+      return answer;
     }
 
   public static void main(String[] args) {
