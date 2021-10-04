@@ -8,8 +8,7 @@ public class Test {
   public static void main(String[] args) {
     Scanner stdIn = new Scanner(System.in);
     String str = stdIn.next();
-    ArrayList<Integer> a = new ArrayList<>();
-    a.add(1);
-    System.out.println(a.toArray()[0]);
+    String answer = "gk" + String.valueOf(1);
+    System.out.println(answer);
   }
 }
