@@ -6,9 +6,7 @@ import java.util.Scanner;
 public class Test {
 
   public static void main(String[] args) {
-    Scanner stdIn = new Scanner(System.in);
-    String str = stdIn.next();
-    String answer = "gk" + String.valueOf(1);
-    System.out.println(answer);
+    int[] a= {0, 1, 2};
+    System.out.print(a[a.length-1]);
   }
 }
