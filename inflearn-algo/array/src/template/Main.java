@@ -5,10 +5,10 @@ import java.util.Scanner;
 public class Main {
 
   public String solution() {
-      String answer = "";
-      
-      return answer;
-    }
+    String answer = "";
+
+    return answer;
+  }
 
   public static void main(String[] args) {
     Main T = new Main();
