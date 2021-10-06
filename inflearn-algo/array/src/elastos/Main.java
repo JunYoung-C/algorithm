@@ -22,7 +22,7 @@ public class Main {
         answer += 1;
       }
     }
-
+    // 1을 저장하고 나중에 카운팅 대신, 바로 카운팅해도 가능하다.
     return answer;
   }
 
