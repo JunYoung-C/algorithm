@@ -21,7 +21,6 @@ public class Main {
         answer[i] = nNums[nI];
         nI++;
       }
-//      System.out.print(answer[i] + " ");
 
     }
     
