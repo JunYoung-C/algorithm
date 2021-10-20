@@ -1,7 +1,12 @@
 package test;
 
+import java.util.Stack;
+
 public class Test {
   public static void main(String[] args) {
-    System.out.print('A' - 64);
+    Stack<Integer> stack = new Stack<>();
+    if (stack.pop() == 1) {
+      System.out.println("hi");
+    }
   }
 }
