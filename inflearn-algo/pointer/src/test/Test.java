@@ -7,7 +7,6 @@ public class Test {
     Stack<Integer> stack = new Stack<>();
     stack.push(1);
     stack.push(2);
-    System.out.println(stack.size());
-    System.out.println(stack.get(1));
+    System.out.println(stack.pop() + stack.pop());
   }
 }
