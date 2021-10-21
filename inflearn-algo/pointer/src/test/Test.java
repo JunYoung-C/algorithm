@@ -8,7 +8,6 @@ public class Test {
     Queue<Character> que = new LinkedList<>();
     que.offer('c');
     que.offer('b');
-    String str1 = que.toString();
-    System.out.println(que.toArray());
+    System.out.println(que.contains('c'));
   }
 }
