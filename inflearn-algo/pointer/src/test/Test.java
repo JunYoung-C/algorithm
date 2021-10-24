@@ -1,13 +1,15 @@
 package test;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Test {
+  int n = 10;
+  public void print() {
+    System.out.println(n);
+  }
   public static void main(String[] args) {
-    Queue<Character> que = new LinkedList<>();
-    que.offer('c');
-    que.offer('b');
-    System.out.println(que.contains('c'));
+    Test t = new Test();
+    t.n = 5;
+    t.print();
+
+    System.out.println(t.n);
   }
 }
