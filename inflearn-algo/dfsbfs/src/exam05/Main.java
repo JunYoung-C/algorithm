@@ -1,4 +1,4 @@
-package exam04;
+package exam05;
 
 import java.util.LinkedList;
 import java.util.Queue;

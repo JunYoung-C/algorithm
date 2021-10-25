@@ -1,18 +1,18 @@
 package template;
 
 import java.util.Scanner;
-
+ 
 public class Main {
-  public String solution() {
-    String answer = "";
+  static String answer = "";
+  public void fs() {
 
-    return answer;
   }
 
   public static void main(String[] args) {
     Main T = new Main();
     Scanner stdIn = new Scanner(System.in);
 
-    System.out.println(T.solution());
+    T.fs();
+    System.out.println(answer);
   }
 }
