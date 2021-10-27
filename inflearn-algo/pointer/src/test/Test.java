@@ -1,15 +1,20 @@
 package test;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Scanner;
 
 public class Test {
-  int n = 10;
-  public void print() {
-    System.out.println(n);
+  public int solution(int[] numbers) {
+    int answer = -1;
+    return answer;
   }
+
   public static void main(String[] args) {
-    Queue<Integer> que = new LinkedList<>();
-    
+    Test T = new Test();
+    Scanner stdIn = new Scanner(System.in);
+    int sum = 0;
+    for (int i = 0; i <= 9; i++) {
+      sum += i;
+    }
+    System.out.print(sum);
   }
 }
