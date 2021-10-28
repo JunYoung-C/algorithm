@@ -28,11 +28,6 @@ public class Main {
         answer++;
       }
       
-      for (char c : sMap.keySet()) {
-        System.out.print(c);
-      }
-      System.out.println();
-      
       if (sMap.get(prevKey) == 1) {
         sMap.remove(prevKey);
       } else {
