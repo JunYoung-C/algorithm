@@ -1,10 +1,12 @@
 package test;
 
+import java.util.Stack;
+
 public class Test {
   public static void main(String[] args) {
-    String str = "found7, time: study; Yduts; emit, 7Dnuof";
-    str.substring(3);
-    
-    System.out.print(str);
+    Stack<Integer> stack = new Stack<>();
+    if (!stack.isEmpty() && stack.peek() == 0) {
+      System.out.print(1);
+    }
   }
 }
