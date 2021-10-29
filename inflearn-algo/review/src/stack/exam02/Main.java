@@ -1,25 +1,23 @@
-package hash.exam06;
+package stack.exam02;
 
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Main {
   public String solution(String str) {
-    String answer = "YES";
+    String answer = "";
     Stack<Character> stack = new Stack<>();
     for (char c : str.toCharArray()) {
-      if (c == '(') {
-        stack.push(c);
-      } else {
-        if (stack.isEmpty()) {
-          return "NO";
+      if (c == ')') {
+        while (stack.pop() != '(') {
         }
-        stack.pop();
+      } else {
+        stack.push(c);
       }
     }
     
-    if (!stack.isEmpty()) {
-      answer = "NO";
+    for (char c : stack) {
+      answer += c;
     }
     return answer;
   }
