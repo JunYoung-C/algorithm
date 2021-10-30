@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Main {
   static int answer = 0;
+
   public void fs() {
 
   }
