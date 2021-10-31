@@ -1,4 +1,4 @@
-package easy;
+package exam1110;
 
 import java.util.Scanner;
 
@@ -18,3 +18,5 @@ public class Main {
 
   }
 }
+
+
