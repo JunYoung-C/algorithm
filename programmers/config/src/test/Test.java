@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class Test {
   public static void main(String[] args) {
-    System.out.println(Math.ceil(Math.sqrt(12)));
+    int[] arr = new int[0];
+    System.out.print(arr[0]);
   }
 }
