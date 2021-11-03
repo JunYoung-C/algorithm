@@ -13,7 +13,6 @@ class Solution {
 
     DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-    System.out.print(dayOfWeek);
     answer = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.US);
 
 
