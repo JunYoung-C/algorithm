@@ -3,14 +3,14 @@ package template.basic;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {
+public class Solution {
   public String solution() {
     String answer = "";
     return answer;
   }
 
   public static void main(String[] args) throws IOException {
-    Main T = new Main();
+    Solution T = new Solution();
     Scanner stdIn = new Scanner(System.in);
     
     T.solution();
