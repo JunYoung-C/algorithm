@@ -13,6 +13,7 @@ public class Solution {
     Solution T = new Solution();
     Scanner stdIn = new Scanner(System.in);
     
-    T.solution();
+    
+    System.out.print(T.solution());
   }
 }
