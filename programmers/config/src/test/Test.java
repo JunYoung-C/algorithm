@@ -4,28 +4,20 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Test {
-  static int[] ch;
-  static int n, m;
-  public void dfs(int L, int start) {
-    if (L == m) {
-      for (int i : ch) {
-        System.out.print(i + " ");
-      }
-      System.out.println();
-    } else{
-      for (int i = start; i <= n; i++) {
-        ch[L] = i;
-        dfs(L + 1, i + 1);
+  boolean isPrime(int num) {
+    if (num <= 1) return false; 
+    for (int i = 2; i <= Math.sqrt(num); i++) {
+      if (num % i == 0) {
+        System.out.print(i);
+        return false;
       }
     }
+    return true;
   }
 
   public static void main(String[] args) throws IOException {
     Test T = new Test();
     Scanner stdIn = new Scanner(System.in);
-    n = stdIn.nextInt();
-    m = stdIn.nextInt();
-    ch = new int[m];
-    T.dfs(0, 1);
+    System.out.print(T.isPrime(stdIn.nextInt()));
   }
 }
