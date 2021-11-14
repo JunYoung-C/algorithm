@@ -1,61 +1,60 @@
 package exam07;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 class Edge implements Comparable<Edge> {
-  int v1;
-  int v2;
+  int vex;
   int cost;
-  public Edge(int v1, int v2, int cost) {
-    super();
-    this.v1 = v1;
-    this.v2 = v2;
+
+  public Edge(int vex, int cost) {
+    this.vex = vex;
     this.cost = cost;
   }
+
   @Override
   public int compareTo(Edge o) {
     return this.cost - o.cost;
   }
-  
-}
-public class Main {
-  static int[] unf;
-  
-  static int Find(int v) {
-    if (v == unf[v]) return v;
-    else return unf[v] = Find(unf[v]);
-  }
-  static void Union(int a, int b) {
-    int fa = Find(a);
-    int fb = Find(b);
-    if (fa != fb) unf[fa] = fb;
-  }
 
+}
+
+
+public class Main {
   public static void main(String[] args) {
     Main T = new Main();
     Scanner stdIn = new Scanner(System.in);
     int n = stdIn.nextInt();
     int m = stdIn.nextInt();
-    unf = new int[n + 1];
-    ArrayList<Edge> arr = new ArrayList<>();
-    for (int i  =1; i <= n; i++) unf[i] = i;
+    ArrayList<ArrayList<Edge>> graph = new ArrayList<ArrayList<Edge>>();
+    for (int i = 0; i <= n; i++) {
+      graph.add(new ArrayList<Edge>());
+    }
+    int[] ch = new int[n + 1];
     for (int i = 0; i < m; i++) {
       int a = stdIn.nextInt();
       int b = stdIn.nextInt();
       int c = stdIn.nextInt();
-      arr.add(new Edge(a, b, c));
+      graph.get(a).add(new Edge(b, c));
+      graph.get(b).add(new Edge(a, c));
     }
     int answer = 0;
-    Collections.sort(arr);
-    for (Edge ob : arr) {
-      int fv1 = Find(ob.v1);
-      int fv2 = Find(ob.v2);
-      if (fv1 != fv2) {
-        answer += ob.cost;
-        Union(ob.v1, ob.v2);
+    PriorityQueue<Edge> pQ = new PriorityQueue<>();
+    pQ.offer(new Edge(1, 0));
+
+    while (!pQ.isEmpty()) {
+      Edge tmp = pQ.poll();
+      int ev = tmp.vex;
+      if (ch[ev] == 0) {
+        ch[ev] = 1;
+        answer += tmp.cost;
+        for (Edge ob : graph.get(ev)) {
+          if (ch[ob.vex] == 0)
+            pQ.offer(new Edge(ob.vex, ob.cost));
+        }
       }
     }
+    System.out.println(answer);
   }
 }
