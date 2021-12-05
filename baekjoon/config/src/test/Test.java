@@ -2,8 +2,7 @@ package test;
 
 public class Test {
   public static void main(String[] args) {
-    long a = Integer.MAX_VALUE;
-    a+= Integer.MAX_VALUE;
+    int a = '1';
     System.out.println(a);
   }
 }
