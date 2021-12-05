@@ -2,7 +2,8 @@ package test;
 
 public class Test {
   public static void main(String[] args) {
-    char[] arr = {'1', '2'};
-    System.out.println(Integer.parseInt(null));
+    long a = Integer.MAX_VALUE;
+    a+= Integer.MAX_VALUE;
+    System.out.println(a);
   }
 }
