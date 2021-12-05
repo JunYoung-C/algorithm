@@ -34,6 +34,7 @@ class Gem implements Comparable<Gem> {
 
 
 public class Main {
+  // 내가 짠 코드
 //  public long solution(int n, ArrayList<Gem> gems, int k, ArrayList<Integer> bags) {
 //    long answer = 0;
 //    int cnt = 0;
