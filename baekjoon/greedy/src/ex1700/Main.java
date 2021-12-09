@@ -24,7 +24,7 @@ public class Main {
         isUsed[now] = true;
         usedCnt++;
       } else {
-        // 2.1 if 전기기구가 사용중, 그대로 스킵 - 위로 올림
+        // 2.1 if 전기기구가 사용중, 그대로 스킵 - 먼저 처리해야 에러 안남
         // 2.2 else 사용중인 콘센트가 이후에도 사용되면 배열에 넣기
         ArrayList<Integer> using = new ArrayList<>();
 
