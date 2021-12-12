@@ -3,7 +3,6 @@ package greedy.makebignum;
 import java.util.Scanner;
 
 class Solution {
-
   public String solution(String number, int k) {
     String answer = "";
     int len = number.length();
