@@ -12,9 +12,9 @@ class Solution {
       char now = name.charAt(nowIdx);
       if (now != 'A') {
         answer += Math.min(now - 'A', 'Z' - now + 1);
-        
+
         int nextIdx = nowIdx + 1;
-        for (;nextIdx < len; nextIdx++) {
+        for (; nextIdx < len; nextIdx++) {
           if (name.charAt(nextIdx) != 'A') {
             break;
           }
@@ -35,22 +35,24 @@ public class Main {
     Scanner stdIn = new Scanner(System.in);
 
     // 1
-//     String name = "JEROEN";
+    // String name = "JEROEN";
 
     // 2
-    String name = "JAN";
+    // String name = "JAN";
     // 3
-//    String name = "AAA";
-    
+    // String name = "AAA";
+
     // 4
-//    String name = "AZA";
+    // String name = "AZA";
 
     // 5
-//    String name = "ABAAB";
-    
-    // 6
-//    String name = "JAZ";
+    // String name = "ABAAB";
 
+    // 6
+    // String name = "JAZ";
+
+    // 7
+    String name = "ABAABB";
     System.out.println(T.solution(name));
   }
 }
