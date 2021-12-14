@@ -6,8 +6,12 @@ class Solution {
   public int solution(String name) {
     int answer = 0;
     int len = name.length();
-    int minDis = len - 1;;
-
+    int minDis = len - 1;
+    
+    for (; minDis >= 0; minDis--) {
+      if (name.charAt(minDis) != 'A') break;
+    }
+    
     for (int nowIdx = 0; nowIdx < len; nowIdx++) {
       char now = name.charAt(nowIdx);
       if (now != 'A') {
@@ -52,7 +56,13 @@ public class Main {
     // String name = "JAZ";
 
     // 7
-    String name = "ABAABB";
+    // String name = "ABAABB";
+
+    // 8
+//    String name = "ABAA";
+    
+    // 9
+    String name = "ABAAABAAB";
     System.out.println(T.solution(name));
   }
 }
