@@ -25,6 +25,6 @@ public class Main {
     Solution T = new Solution();
     Scanner stdIn = new Scanner(System.in);
     
-    System.out.println(T.solution());
+//    System.out.println(T.solution());
   }
 }
