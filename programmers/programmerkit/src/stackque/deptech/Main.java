@@ -1,4 +1,4 @@
-package stackque;
+package stackque.deptech;
 
 import java.util.ArrayList;
 import java.util.Scanner;
