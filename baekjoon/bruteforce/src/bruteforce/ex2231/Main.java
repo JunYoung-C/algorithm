@@ -1,4 +1,4 @@
-package bruteforce.desomsum;
+package bruteforce.ex2231;
 
 import java.util.Scanner;
 

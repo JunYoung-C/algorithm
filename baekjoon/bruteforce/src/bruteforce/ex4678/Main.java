@@ -1,4 +1,4 @@
-package bruteforce.selfnumber;
+package bruteforce.ex4678;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

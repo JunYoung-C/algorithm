@@ -1,4 +1,4 @@
-package bruteforce.nqueen;
+package bruteforce.ex9663;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

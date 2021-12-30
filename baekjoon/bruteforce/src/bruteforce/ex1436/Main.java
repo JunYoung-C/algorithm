@@ -1,4 +1,4 @@
-package bruteforce.movieshom;
+package bruteforce.ex1436;
 
 import java.util.Scanner;
 

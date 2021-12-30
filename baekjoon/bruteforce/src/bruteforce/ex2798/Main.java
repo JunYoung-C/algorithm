@@ -1,4 +1,4 @@
-package bruteforce.blackjack;
+package bruteforce.ex2798;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

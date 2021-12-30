@@ -1,4 +1,4 @@
-package bruteforce.sevenkid;
+package bruteforce.ex2309;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

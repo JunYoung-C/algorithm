@@ -1,4 +1,4 @@
-package bruteforce.chessboard;
+package bruteforce.ex1018;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

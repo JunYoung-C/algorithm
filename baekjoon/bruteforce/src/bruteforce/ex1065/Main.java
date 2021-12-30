@@ -1,4 +1,4 @@
-package bruteforce.hannumber;
+package bruteforce.ex1065;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
