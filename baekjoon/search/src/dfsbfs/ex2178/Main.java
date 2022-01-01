@@ -1,4 +1,4 @@
-package bfs.ex2178;
+package dfsbfs.ex2178;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

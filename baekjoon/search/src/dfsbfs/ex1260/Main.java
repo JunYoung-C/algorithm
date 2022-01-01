@@ -1,4 +1,4 @@
-package bfs.ex1260;
+package dfsbfs.ex1260;
 
 import java.io.BufferedReader;
 import java.io.IOException;
