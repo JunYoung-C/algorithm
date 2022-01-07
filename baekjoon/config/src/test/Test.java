@@ -1,10 +1,10 @@
 package test;
 
+import java.util.ArrayList;
+
 public class Test {
   public static void main(String[] args) {
-    long a = 0L;
-    a += Integer.MAX_VALUE;
-    a += Integer.MAX_VALUE;
-    System.out.println(a);
+    ArrayList<Integer> arr = new ArrayList<>();
+    System.out.println(arr.isEmpty());
   }
 }
