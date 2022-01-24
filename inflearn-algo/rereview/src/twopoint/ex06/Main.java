@@ -24,7 +24,7 @@ public class Main {
         }
       } 
       
-      System.out.println(lt + " " + rt + " " + (rt - lt));
+//      System.out.println(lt + " " + rt + " " + (rt - lt));
       answer = Math.max(answer, rt - lt);
     }
 
