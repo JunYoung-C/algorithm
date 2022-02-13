@@ -1,4 +1,4 @@
-package programmers.greedy.lv2.bigestnum;
+package programmers.greedy.lv2.joystick;
 
 import java.util.Scanner;
 
