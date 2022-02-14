@@ -1,11 +1,14 @@
 package test;
 
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class test {
     public static void main(String[] args) {
-        Scanner stdIn = new Scanner(System.in);
-        char c = stdIn.next().charAt(0);
-        System.out.println((Math.min(c - 'A', 'Z' + 1 - c)));
+        PriorityQueue<Integer> pQ = new PriorityQueue<>();
+        pQ.offer(1);
+        pQ.offer(1);
+        pQ.remove(pQ.poll());
+        System.out.println(pQ.peek());
     }
 }
