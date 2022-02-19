@@ -7,8 +7,16 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class test {
+    static String getNumber(int k, int num) {
+        StringBuilder sb = new StringBuilder();
+        int n = num;
+        while (n > 0) {
+            sb.append(n % k);
+            n /= k;
+        }
+        return sb.reverse().toString();
+    }
     public static void main(String[] args) {
-        Set<String> set = new HashSet<>();
-        System.out.println(set.size());
+        "111".split("0");
     }
 }
