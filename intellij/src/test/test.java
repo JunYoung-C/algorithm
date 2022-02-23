@@ -5,6 +5,10 @@ import java.util.*;
 
 public class test {
     public static void main(String[] args) {
-        System.out.println(Math.ceil(1.5));
+        long num = 1;
+        for (int i = 1; i <= 13; i++) {
+            num *= i;
+        }
+        System.out.println(num);
     }
 }
