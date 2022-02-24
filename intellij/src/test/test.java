@@ -5,10 +5,6 @@ import java.util.*;
 
 public class test {
     public static void main(String[] args) {
-        long num = 1;
-        for (int i = 1; i <= 13; i++) {
-            num *= i;
-        }
-        System.out.println(num);
+        System.out.println(Integer.valueOf(100));
     }
 }
