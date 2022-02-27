@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.calculateparkingfee;
+package programmers.exam.kakao.year2022.calculateparkingfee;
 
 import java.util.Arrays;
 import java.util.HashMap;

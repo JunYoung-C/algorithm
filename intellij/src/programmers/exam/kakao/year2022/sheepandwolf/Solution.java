@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.sheepandwolf;
+package programmers.exam.kakao.year2022.sheepandwolf;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

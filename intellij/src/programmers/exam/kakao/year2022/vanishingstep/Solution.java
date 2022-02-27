@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.vanishingstep;
+package programmers.exam.kakao.year2022.vanishingstep;
 
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.notbrokenbuilding;
+package programmers.exam.kakao.year2022.notbrokenbuilding;
 
 import java.util.Scanner;
 

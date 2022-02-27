@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.getprimecntatk;
+package programmers.exam.kakao.year2022.getprimecntatk;
 
 import java.util.Scanner;
 

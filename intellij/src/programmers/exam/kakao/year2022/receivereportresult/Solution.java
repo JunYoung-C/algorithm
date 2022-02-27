@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.receivereportresult;
+package programmers.exam.kakao.year2022.receivereportresult;
 
 import java.util.HashMap;
 import java.util.HashSet;

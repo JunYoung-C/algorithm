@@ -1,4 +1,4 @@
-package programmers.kakao.year2022.archerycompetition;
+package programmers.exam.kakao.year2022.archerycompetition;
 
 import java.util.ArrayList;
 import java.util.Collections;
