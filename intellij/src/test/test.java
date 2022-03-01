@@ -4,7 +4,9 @@ import java.awt.*;
 import java.util.*;
 
 public class test {
+    int i;
     public static void main(String[] args) {
-        System.out.println(Integer.valueOf(100));
+        test t = new test();
+        System.out.println(t.i);
     }
 }
