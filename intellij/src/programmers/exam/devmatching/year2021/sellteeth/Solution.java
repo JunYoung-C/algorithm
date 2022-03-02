@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 class Info {
     String referralName;
-    long totalIncome;
+    int totalIncome;
 
     public Info(String referralName) {
         this.referralName = referralName;
@@ -19,9 +19,9 @@ class Info {
 }
 
 class Solution {
-    public long[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
+    public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
         int enrollLen = enroll.length;
-        long[] answer = new long[enrollLen];
+        int[] answer = new int[enrollLen];
         Map<String, Info> infoMap = new HashMap<>();
         // enroll이 key
         for (int i = 0; i < enrollLen; i++) {
@@ -31,29 +31,28 @@ class Solution {
         int sellerLen = seller.length;
         for (int i = 0; i < sellerLen; i++) {
             int income = amount[i] * 100;
-            int partOfIncome = income / 10;
-            income -= partOfIncome;
-
+            int partOfIncome;
             Info myInfo = infoMap.get(seller[i]);
-            while (income >= 10 && !myInfo.referralName.equals("-")) {
+
+            while (income > 0) {
+                partOfIncome = income / 10;
+                income -= partOfIncome;
 
                 myInfo.addIncome(income);
 
-                myInfo = infoMap.get(myInfo.referralName);
                 income = partOfIncome;
-                partOfIncome = income / 10;
-                income -= partOfIncome;
-            }
 
-            myInfo.addIncome(income);
+                if (myInfo.referralName.equals("-")) {
+                    break;
+                }
+                myInfo = infoMap.get(myInfo.referralName);
+            }
         }
 
-//        for (String key : infoMap.keySet()) {
-//            System.out.println(key + ":[" + infoMap.get(key).totalIncome + ", " + infoMap.get(key).referralName + "]");
-//        }
 
         for (int i = 0; i < enrollLen; i++) {
             answer[i] = infoMap.get(enroll[i]).totalIncome;
+//            System.out.println(enroll[i] + ":" + infoMap.get(enroll[i]).referralName);
         }
         return answer;
     }
@@ -76,6 +75,14 @@ class Solution {
 //        String[] seller = {"sam", "emily", "jaimie", "edward"};
 //        int[] amount = {2, 3, 5, 4};
 
+//        String[] enroll =
+//                {"john", "sam", "amie", "jay"};
+//        String[] referral =
+//                {"-", "john", "sam", "amie"};
+//        String[] seller =
+//                {"jay"};
+//        int[] amount =
+//                {100};
         for (long i : T.solution(enroll, referral, seller, amount)) {
             System.out.print(i + " ");
         }
