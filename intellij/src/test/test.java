@@ -4,9 +4,8 @@ import java.awt.*;
 import java.util.*;
 
 public class test {
-    int i;
     public static void main(String[] args) {
-        test t = new test();
-        System.out.println(t.i);
+        String s = "oneone";
+        System.out.println(s.substring(0, 6));
     }
 }
