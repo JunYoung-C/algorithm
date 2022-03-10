@@ -30,56 +30,24 @@ class Solution {
 
         Node nowNode = table[k];
         Node prevNode, nextNode;
+        int deletedIndex;
         for (String command : cmd) {
             if (command.equals("C")) {
                 nowNode.status = 'X';
                 deletedIndexStack.push(nowNode.index);
 
-                if (nowNode.nextNode == null) {
-                    prevNode = nowNode.prevNode;
-                    prevNode.nextNode = null;
-                    nowNode.prevNode = null;
-
-                    nowNode = prevNode;
-                } else if (nowNode.prevNode == null) {
-                    nextNode = nowNode.nextNode;
-                    nextNode.prevNode = null;
-                    nowNode.nextNode = null;
-
-                    nowNode = nextNode;
-                } else {
-                    prevNode = nowNode.prevNode;
-                    nextNode = nowNode.nextNode;
-                    prevNode.nextNode = nextNode;
-                    nextNode.prevNode = prevNode;
-                    nowNode.prevNode = nowNode.nextNode = null;
-
-                    nowNode = nextNode;
-                }
+                nowNode = delete(nowNode);
             } else if (command.equals("Z")) {
-                int deletedIndex = deletedIndexStack.pop();
+                deletedIndex = deletedIndexStack.pop();
                 table[deletedIndex].status = 'O';
-                nextNode = null;
-                prevNode = null;
 
-                // nextNode 찾기
-                for (int rt = deletedIndex + 1; rt < n; rt++) {
-                    if (table[rt].status == 'O') {
-                        nextNode = table[rt];
-                        break;
-                    }
-                }
-
-                // prevNode 찾기
-                for (int lt = deletedIndex - 1; lt >= 0; lt--) {
-                    if (table[lt].status == 'O') {
-                        prevNode = table[lt];
-                        break;
-                    }
-                }
-
-                table[deletedIndex].prevNode = prevNode;
-                table[deletedIndex].nextNode = nextNode;
+                nextNode = table[deletedIndex].nextNode;
+                prevNode = table[deletedIndex].prevNode;
+//                nextNode = findNextNode(n, table,  deletedIndex);
+//                prevNode = findPrevNode(table,  deletedIndex);
+//
+//                table[deletedIndex].prevNode = prevNode;
+//                table[deletedIndex].nextNode = nextNode;
                 if (prevNode != null) {
                     prevNode.nextNode = table[deletedIndex];
                 }
@@ -89,7 +57,7 @@ class Solution {
             } else { // D X, U X
                 String[] moveCmd = command.split(" ");
 
-                nowNode = moveAndReturnNowNode(moveCmd[0], Integer.parseInt(moveCmd[1]), nowNode, n, table);
+                nowNode = move(moveCmd[0], Integer.parseInt(moveCmd[1]), nowNode, n, table);
 //                System.out.println(nowNode.index);
             }
         }
@@ -101,7 +69,47 @@ class Solution {
         return sb.toString();
     }
 
-    private Node moveAndReturnNowNode(String direction, int count, Node nowNode, int len, Node[] table) {
+    private Node findPrevNode(Node[] table, int index) {
+        Node prevNode = null;
+        for (int lt = index - 1; lt >= 0; lt--) {
+            if (table[lt].status == 'O') {
+                prevNode = table[lt];
+                break;
+            }
+        }
+        return prevNode;
+    }
+
+    private Node findNextNode(int n, Node[] table, int index) {
+        Node nextNode = null;
+        for (int rt = index + 1; rt < n; rt++) {
+            if (table[rt].status == 'O') {
+                nextNode = table[rt];
+                break;
+            }
+        }
+        return nextNode;
+    }
+
+    private Node delete(Node nowNode) {
+        if (nowNode.nextNode == null) {
+            nowNode.prevNode.nextNode = null;
+
+            nowNode = nowNode.prevNode;
+        } else if (nowNode.prevNode == null) {
+            nowNode.nextNode.prevNode = null;
+
+            nowNode = nowNode.nextNode;
+        } else {
+            nowNode.prevNode.nextNode = nowNode.nextNode;
+            nowNode.nextNode.prevNode = nowNode.prevNode;
+
+            nowNode = nowNode.nextNode;
+        }
+        return nowNode;
+    }
+
+    private Node move(String direction, int count, Node nowNode, int len, Node[] table) {
         int moveCnt = 0;
 
         if (direction.equals("D")) { // 인덱스 증가
@@ -123,13 +131,13 @@ class Solution {
         Solution T = new Solution();
         Scanner stdIn = new Scanner(System.in);
 
-        int n = 8;
-        int k = 2;
-        String[] cmd = {"D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"};
-
 //        int n = 8;
 //        int k = 2;
-//        String[] cmd = {"D 2","C","U 3","C","D 4","C","U 2","Z","Z","U 1","C"};
+//        String[] cmd = {"D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"};
+
+        int n = 8;
+        int k = 2;
+        String[] cmd = {"D 2","C","U 3","C","D 4","C","U 2","Z","Z","U 1","C"};
         System.out.println(T.solution(n, k, cmd));
     }
 }
