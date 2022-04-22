@@ -1,4 +1,4 @@
-package template.scannerbasic;
+package template.forbackjoon.scannerbasic;
 
 import java.util.Scanner;
 

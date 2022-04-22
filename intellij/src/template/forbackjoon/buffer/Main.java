@@ -1,4 +1,4 @@
-package template.buffer;
+package template.forbackjoon.buffer;
 
 import java.io.*;
 import java.util.StringTokenizer;
