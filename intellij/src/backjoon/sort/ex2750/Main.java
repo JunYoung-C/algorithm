@@ -7,16 +7,13 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         for (int i = 0; i < n - 1; i++) {
-            int minIdx = i;
-            for (int j = i + 1; j < n; j++) {
-                if (numbers[minIdx] > numbers[j]) {
-                    minIdx = j;
+            for (int j = n - 1; j > i; j--) {
+                if (numbers[j] < numbers[j - 1]) {
+                    int tmp = numbers[j];
+                    numbers[j] = numbers[j - 1];
+                    numbers[j - 1] = tmp;
                 }
             }
-
-            int tmp = numbers[i];
-            numbers[i] = numbers[minIdx];
-            numbers[minIdx] = tmp;
         }
 
         for (int number : numbers) {
