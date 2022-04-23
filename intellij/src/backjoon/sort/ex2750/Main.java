@@ -6,12 +6,14 @@ public class Main {
     public void solution(int n, int[] numbers) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = n - 1; j > i; j--) {
+        for (int i = 1; i < n; i++) {
+            for (int j = i; j > 0; j--) {
                 if (numbers[j] < numbers[j - 1]) {
                     int tmp = numbers[j];
                     numbers[j] = numbers[j - 1];
                     numbers[j - 1] = tmp;
+                } else {
+                    break;
                 }
             }
         }
