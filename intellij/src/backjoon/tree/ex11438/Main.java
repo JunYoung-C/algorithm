@@ -51,52 +51,48 @@ public class Main {
             int num1 = Integer.parseInt(st.nextToken());
             int num2 = Integer.parseInt(st.nextToken());
 
-            if (depths[num1] > depths[num2]) { // num1가 더 깊으므로 num1의 깊이를 낮춘다.
-                num1 = findSameDepthParent(depths[num1] - depths[num2], num1);
-            } else if (depths[num1] < depths[num2]) { // num2가 더 깊으므로 num2의 깊이를 낮춘다.
-                num2 = findSameDepthParent(depths[num2] - depths[num1], num2);
+            if (depths[num1] > depths[num2]) {
+                int tmp = num1;
+                num1 = num2;
+                num2 = tmp;
             }
 
-            bw.write(findLCA(num1, num2) + "\n");
+            num2 = findSameDepthParent(num1, num2, k);
+
+            bw.write(findLCA(num1, num2, k) + "\n");
         }
 
         bw.flush();
         bw.close();
     }
 
-    private static int findLCA(int num1, int num2) {
-        if (num1 == num2) {
-            return num1;
-        } else if (p[0][num1] == p[0][num2]) {
-            return p[0][num1];
+    private static int findLCA(int num1, int num2, int k) {
+
+        for (int exponent = k; exponent >= 0 && num1 != num2; exponent--) {
+            if (p[exponent][num1] != p[exponent][num2]) {
+                num1 = p[exponent][num1];
+                num2 = p[exponent][num2];
+            }
         }
 
-        int commonAncestorExponent = findCAExponent(num1, num2);
-        num1 = p[commonAncestorExponent - 1][num1];
-        num2 = p[commonAncestorExponent - 1][num2];
-        return findLCA(num1, num2);
+        int lca = num1;
+        if (num1 != num2) {
+            lca = p[0][num1];
+        }
+        return lca;
     }
 
-    private static int findCAExponent(int num1, int num2) {
-        int commonAncestorExponent = 0;
+    private static int findSameDepthParent(int shallowNum, int deepNum, int k) {
 
-        while (p[commonAncestorExponent][num1] != p[commonAncestorExponent][num2]) {
-            commonAncestorExponent++;
+        for (int exponent = k; exponent >= 0; exponent--) {
+            if (depths[deepNum] - depths[shallowNum] >= (int) Math.pow(2, exponent)) {
+                if (depths[shallowNum] <= depths[p[exponent][deepNum]]) {
+                    deepNum = p[exponent][deepNum];
+                }
+            }
         }
 
-        return commonAncestorExponent;
-    }
-
-    private static int findSameDepthParent(int depthDif, int child) {
-        int k = findExponent(depthDif);
-        int reducedDepthDif = (int) Math.pow(2, k);
-
-        child = p[k][child];
-        if (reducedDepthDif == depthDif) {
-            return child;
-        }
-
-        return findSameDepthParent(reducedDepthDif, child);
+        return deepNum;
     }
 
     private static void initArrayP(int nodeCount, int k) {
