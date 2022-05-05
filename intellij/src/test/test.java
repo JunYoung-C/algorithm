@@ -5,7 +5,10 @@ import java.util.*;
 
 public class test {
     public static void main(String[] args) {
-        char[] charArr = {'O', 'X'};
-        System.out.println(String.valueOf(charArr));
+        long num = 1;
+        for (int i = 1; i <= 20; i++) {
+            num *= i;
+            System.out.println(num);
+        }
     }
 }
