@@ -5,10 +5,10 @@ import java.util.*;
 
 public class test {
     public static void main(String[] args) {
-        long num = 1;
-        for (int i = 1; i <= 20; i++) {
-            num *= i;
-            System.out.println(num);
-        }
+        StringBuilder result = new StringBuilder();
+        result.append(1);
+        result.append('2');
+
+        System.out.println(result.toString());
     }
 }
