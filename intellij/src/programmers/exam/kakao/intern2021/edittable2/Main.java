@@ -1,14 +1,26 @@
 package programmers.exam.kakao.intern2021.edittable2;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 class Solution {
-    public String solution(int nodeCount, int selectedIndex, String[] commands) {
-        StringTokenizer st;
+    int[] numbers;
+    int[] fenwick;
+    int maxNumber;
 
-        Node[] nodes = createNodeList(nodeCount);
-        Stack<Node> deletedNodes = new Stack<>();
-        Node selectedNode = nodes[selectedIndex];
+    public String solution(int numberCount, int selectedIndex, String[] commands) {
+        StringTokenizer st;
+        Stack<Integer> deletedIndexes = new Stack<>();
+        maxNumber = numberCount;
+        numbers = new int[numberCount];
+        fenwick = new int[numberCount + 1];
+        Arrays.fill(numbers, 1);
+
+        for (int i = 1; i <= numberCount; i++) {
+            update(i, 1);
+        }
 
         for (String command : commands) {
             st = new StringTokenizer(command);
@@ -16,94 +28,71 @@ class Solution {
 
             if (operator.equals("U")) { // 인덱스 감소
                 int moveCount = Integer.parseInt(st.nextToken());
-                while (moveCount-- > 0) {
-                    selectedNode = selectedNode.prevNode;
-                }
+                selectedIndex = binarySearch(sum(selectedIndex + 1) - moveCount);
             } else if (operator.equals("D")) { // 인덱스 증가
                 int moveCount = Integer.parseInt(st.nextToken());
-                while (moveCount-- > 0) {
-                    selectedNode = selectedNode.nextNode;
-                }
+                selectedIndex = binarySearch(sum(selectedIndex + 1) + moveCount);
             } else if (operator.equals("C")) { // 노드 삭제
-                deletedNodes.push(selectedNode);
-                selectedNode.isDeleted = true;
+                deletedIndexes.push(selectedIndex);
+                numbers[selectedIndex] = 0;
+                update(selectedIndex + 1, -1);
 
-                selectedNode.prevNode.nextNode = selectedNode.nextNode;
-                selectedNode.nextNode.prevNode = selectedNode.prevNode;
-
-                if (selectedNode.nextNode.isEnd) {
-                    selectedNode = selectedNode.prevNode;
+                if ((sum(selectedIndex + 1) == maxNumber - deletedIndexes.size())) {
+                    while (numbers[selectedIndex] == 0) {
+                        selectedIndex--;
+                    }
                 } else {
-                    selectedNode = selectedNode.nextNode;
+                    while (numbers[selectedIndex] == 0) {
+                        selectedIndex++;
+                    }
                 }
-
             } else if (operator.equals("Z")) { // 노드 복구
-                Node recentlyDeletedNode = deletedNodes.pop();
-                recentlyDeletedNode.isDeleted = false;
-                recentlyDeletedNode.prevNode.nextNode = recentlyDeletedNode;
-                recentlyDeletedNode.nextNode.prevNode = recentlyDeletedNode;
+                int restoredIndex = deletedIndexes.pop();
+                numbers[restoredIndex] = 1;
+                update(restoredIndex + 1, 1);
             }
         }
 
         StringBuilder sb = new StringBuilder();
+        for (int i : numbers) {
+            sb.append(i == 1 ? "O" : "X");
 
-        for (int i = 0; i < nodeCount; i++) {
-            if (nodes[i].isDeleted) {
-                sb.append("X");
-            } else {
-                sb.append("O");
-            }
         }
-
         return sb.toString();
     }
 
-    private Node[] createNodeList(int nodeCount) {
-        Node[] nodes = new Node[nodeCount + 1];
-        for (int i = 0; i < nodeCount; i++) {
-            nodes[i] = new Node(i);
+    private void update(int index, int dif) {
+        while (index <= maxNumber) {
+            fenwick[index] += dif;
+            index += index & -index;
         }
-
-        for (int i = 1; i < nodeCount - 1; i++) {
-            nodes[i].nextNode = nodes[i + 1];
-            nodes[i].prevNode = nodes[i - 1];
-        }
-
-        Node startNode = new Node(); // 편의를 위한 빈 노드 생성
-        startNode.isStart = true;
-        startNode.nextNode = nodes[0];
-        nodes[0].prevNode = startNode;
-//        nodes[0].hasPrev = false;
-        nodes[0].nextNode = nodes[1];
-
-        Node endNode = new Node(); // 편의를 위한 빈 노드 생성
-        endNode.prevNode = nodes[nodeCount - 1];
-        endNode.isEnd = true;
-        nodes[nodeCount - 1].nextNode = endNode; // 편의를 위한 빈 노드 연결
-//        nodes[nodeCount - 1].hasNext = false;
-        nodes[nodeCount - 1].prevNode = nodes[nodeCount - 2];
-
-        return nodes;
     }
 
-    class Node {
-        int index;
-//        boolean hasNext;
-//        boolean hasPrev;
-        Node nextNode;
-        Node prevNode;
-        boolean isDeleted;
-        boolean isStart;
-        boolean isEnd;
-
-        public Node() {
+    private int sum(int index) {
+        int sum = 0;
+        while (index > 0) {
+            sum += fenwick[index];
+            index -= index & -index;
         }
 
-        public Node(int index) {
-            this.index = index;
-//            this.hasNext = true;
-//            this.hasPrev = true;
+        return sum;
+    }
+
+    private int binarySearch(int target) {
+        int start = 1, end = maxNumber;
+
+        while (start <= end) {
+            int mid = (start + end) / 2;
+            int sum = sum(mid);
+
+            if (target <= sum) {
+                end = mid - 1;
+            } else  {
+                start = mid + 1;
+            }
         }
+
+        return start - 1;
     }
 }
 
@@ -114,7 +103,7 @@ public class Main {
 
         int n = 8;
         int k = 2;
-//        String[] cmd = {"D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"};
+        String[] cmd = {"D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"};
 
 //        int n = 8;
 //        int k = 2;
@@ -123,7 +112,7 @@ public class Main {
 //        String[] cmd = {"U 2", "C"};
 //        String[] cmd = {"U 2", "C", "Z"};
 //        String[] cmd = {"U 2", "C", "C", "C", "C", "C"};
-        String[] cmd = {"D 5", "C", "C", "C", "C", "C"};
+//        String[] cmd = {"D 5", "C", "C", "C", "C", "C"};
 
         System.out.println(T.solution(n, k, cmd));
     }
