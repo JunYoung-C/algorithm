@@ -14,6 +14,7 @@ class Solution {
         setMaxAlpAndCop(problems); // 우선 필요 알고력과 코딩력을 파악한다.
         minCost = maxAlp + maxCop; // 가장 비효율적인 비용은 maxAlp와 maxCop를 더한 값이다. 공부만 하면 채울 수 있기 때문이다.
 
+        // 우선순위 큐와 dp를 활용하는 방법도 있을 것 같지만, 해당 부분은 공부가 더 필요하다.
         dfs(alp, cop, 0, problems);
 
         return minCost;
