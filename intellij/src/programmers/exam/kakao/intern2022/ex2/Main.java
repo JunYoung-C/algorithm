@@ -9,9 +9,9 @@ import java.util.Scanner;
 class Solution {
     public int solution(int[] queue1, int[] queue2) {
         int answer = 0;
-        long queSum1 = Arrays.stream(queue1).sum();
+        long queSum1 = Arrays.stream(queue1).sum(); // 초기 상태의 합
         long queSum2 = Arrays.stream(queue2).sum();
-        long numberCount = queue1.length + queue2.length;
+        long numberCount = queue1.length + queue2.length; // 사실 길이가 서로 같은 큐가 주어지기 때문에 queue1.length * 2로 해도 된다.
         int num;
 
         Queue<Integer> que1 = new LinkedList<>();
@@ -30,24 +30,24 @@ class Solution {
         // 정확한 수를 산출하지는 못했지만(numCount + 1까지하면 될지도), 일정 횟수 이상의 반복은 중복인 것은 확실하다.
         // 제약 조건이 있어야 한다는 것이 중요하기 때문에 numberCount * 2 이하로 설정하여 무난하게 해결할 수 있었다.
         while (answer < numberCount * 2) {
-            if (queSum1 > queSum2) {
+            if (queSum1 > queSum2) { // que1의 합이 더 크면 que2로 요소 삽입
                 num = que1.poll();
                 que2.offer(num);
                 queSum1 -= num;
                 queSum2 += num;
 
-            } else if (queSum1 < queSum2) {
+            } else if (queSum1 < queSum2) { // que2의 합이 더 크면 que1로 요소 삽입
                 num = que2.poll();
                 que1.offer(num);
                 queSum1 += num;
                 queSum2 -= num;
-            } else {
+            } else { // 서로 합이 같으면 종료
                 return answer;
             }
             answer++;
         }
 
-        return -1;
+        return -1; // 합이 같은 경우를 찾을 수 없는 경우
     }
 
     private void initQue(int[] queue, Queue<Integer> que) {

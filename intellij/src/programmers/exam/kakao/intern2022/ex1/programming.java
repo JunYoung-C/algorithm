@@ -10,14 +10,14 @@ class Solution {
         char[][] indicators = {{'R', 'T'}, {'C', 'F'}, {'J', 'M'}, {'A', 'N'}}; // 지표별 사전 순서를 고려하여 배치
         int[] scores = {0, 3, 2, 1, 0, 1, 2, 3};
         HashMap<Character, Integer> scoreMap = new HashMap<>();
-        initScoreMap(indicators, scoreMap);
+        initScoreMap(indicators, scoreMap); // 초기 점수는 모두 0으로 세팅해서 넣어놓는다. 나중에 0이라 없으면, 불편하다.
 
         setScore(survey, choices, scores, scoreMap);
 
         for (char[] indicator : indicators) {
             // 점수가 높은 요소가 성격유형
-            // 점수가 같으면 첫번째 요소가 성격유형
-
+            // 점수가 같으면 첫번째 요소가 성격유형 -> 미리 사전순으로 배치했기 때문이다.
+                // 첫번째 요소의 점수가 높거나 같은 경우로 조건문 축약 가능
             if (scoreMap.get(indicator[0]) >= scoreMap.get(indicator[1])) {
                 answer += indicator[0];
             } else {
