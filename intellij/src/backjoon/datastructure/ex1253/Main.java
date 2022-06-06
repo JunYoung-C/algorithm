@@ -1,35 +1,31 @@
 package backjoon.datastructure.ex1253;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    public int solution(int[] numbers, int n) {
-        if (n <= 2) {
-            return 0;
-        }
-
-        int count = 0;
+    public int solution(int n, int[] numbers) {
+        int answer = 0;
         Arrays.sort(numbers);
 
-        int lt, rt;
-        for (int target = 0; target < n; target++) {
-            lt = 0;
-            rt = n - 1;
+        for (int i = 0; i < n; i++) {
+            int lt = 0, rt = n - 1;
 
-            int sum;
             while (lt < rt) {
-                sum = numbers[lt] + numbers[rt];
-                if (sum == numbers[target]) {
-                    if (lt != target && rt != target) {
-                        count++;
-                        break;
-                    } else if (lt == target) {
-                        lt++;
-                    } else {
-                        rt--;
-                    }
-                } else if (sum > numbers[target]) {
+                if (lt == i) {
+                    lt++;
+                    continue;
+                } else if (rt == i) {
+                    rt--;
+                    continue;
+                }
+
+                int sum = numbers[lt] + numbers[rt];
+                if (sum == numbers[i]) {
+                    answer++;
+                    break;
+                } else if (sum > numbers[i]) {
                     rt--;
                 } else {
                     lt++;
@@ -37,7 +33,7 @@ public class Main {
             }
         }
 
-        return count;
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
@@ -47,13 +43,12 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         int n = Integer.parseInt(st.nextToken());
-
-        int[] numbers = new int[n];
         st = new StringTokenizer(br.readLine());
+        int[] numbers = new int[n];
         for (int i = 0; i < n; i++) {
             numbers[i] = Integer.parseInt(st.nextToken());
         }
-        bw.write(T.solution(numbers, n) + "");
+        bw.write(T.solution(n, numbers)+ "");
         bw.flush();
         bw.close();
     }
