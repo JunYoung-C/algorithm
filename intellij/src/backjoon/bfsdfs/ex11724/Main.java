@@ -6,15 +6,15 @@ import java.util.StringTokenizer;
 
 public class Main {
     boolean[] isVisited;
-
     public int solution(int nodeCount, int edgeCount, ArrayList<ArrayList<Integer>> graph) {
         int answer = 0;
         isVisited = new boolean[nodeCount + 1];
 
         for (int node = 1; node <= nodeCount; node++) {
             if (!isVisited[node]) {
-                answer++;
+                isVisited[node] = true;
                 dfs(node, graph);
+                answer++;
             }
         }
 
@@ -22,10 +22,9 @@ public class Main {
     }
 
     private void dfs(int now, ArrayList<ArrayList<Integer>> graph) {
-        isVisited[now] = true;
-
         for (int next : graph.get(now)) {
             if (!isVisited[next]) {
+                isVisited[next] = true;
                 dfs(next, graph);
             }
         }
@@ -39,8 +38,8 @@ public class Main {
 
         int nodeCount = Integer.parseInt(st.nextToken());
         int edgeCount = Integer.parseInt(st.nextToken());
-
         ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+
         for (int i = 0; i <= nodeCount; i++) {
             graph.add(new ArrayList<>());
         }
@@ -49,12 +48,12 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-
             graph.get(a).add(b);
             graph.get(b).add(a);
         }
 
-        bw.write(T.solution(nodeCount, edgeCount, graph)+ "");
+        br.close();
+        bw.write(T.solution(nodeCount, edgeCount, graph) + "");
         bw.flush();
         bw.close();
     }
