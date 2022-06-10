@@ -5,13 +5,10 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    public int solution(int target, int n, int[] numbers) {
-        int answer = 0; // 존재하지 않는 경우 0
+    public int solution(int n, int[] numbers, int target) {
         int lt = 0, rt = n - 1;
-        int mid;
         while (lt <= rt) {
-            mid = (lt + rt) / 2;
+            int mid = (lt + rt) / 2;
 
             if (numbers[mid] == target) {
                 return 1;
@@ -22,7 +19,7 @@ public class Main {
             }
         }
 
-        return answer;
+        return 0;
     }
 
     public static void main(String[] args) throws IOException {
@@ -38,16 +35,15 @@ public class Main {
         for (int i = 0; i < n; i++) {
             numbers[i] = Integer.parseInt(st.nextToken());
         }
-
         Arrays.sort(numbers);
 
-        int testCount = Integer.parseInt(br.readLine());
+        int count = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < testCount; i++) {
-            int target = Integer.parseInt(st.nextToken());
-            bw.write(T.solution(target, n, numbers)+ "\n");
-
+        while (count-- > 0) {
+            bw.write(T.solution(n, numbers, Integer.parseInt(st.nextToken()))+ "\n");
         }
+
+        br.close();
         bw.flush();
         bw.close();
     }
