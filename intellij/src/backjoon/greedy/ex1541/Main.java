@@ -4,59 +4,71 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    public int solution(String formula) {
+    public int solution(String str) {
         int answer = 0;
+        boolean isInBrace = false;
         ArrayList<Integer> numbers = new ArrayList<>();
-        ArrayList<Character> operators = new ArrayList<>();
-        setLists(formula, numbers, operators);
+        ArrayList<Character> operations = new ArrayList<>();
+        seperateNumberAndOperation(str, numbers, operations);
 
-        answer = numbers.get(0);
-        boolean isAppliedBracket = false;
-        int lt = 0;
-        for (int i = 0; i < operators.size(); i++) {
-            if (operators.get(i) == '+') {
-                if (isAppliedBracket) {
-                    lt += numbers.get(i + 1);
-                } else {
-                    answer += numbers.get(i + 1);
+        // 괄호 안(이전에 -를 만났었다는 뜻)
+          // 현재 부호가 +면 괄호 유지. -면 괄호 닫은 후 새로 괄호 열기
+        // 괄호 밖(첫번째 수 or 이전에 +부호)
+          // 현재 부호가 +면 그냥 더하기. -면 괄호 열기
+
+        int tmp = 0;
+        for (int i = 0; i < operations.size(); i++) {
+            if (isInBrace) {
+                tmp += numbers.get(i);
+
+                if (operations.get(i) == '-') {
+                    answer -= tmp;
+                    tmp = 0;
                 }
             } else {
-                if (isAppliedBracket) {
-                    answer -= lt;
-                } else {
-                    isAppliedBracket = true;
+                answer += numbers.get(i);
+                if (operations.get(i) == '-') {
+                    isInBrace = true;
                 }
-                lt = numbers.get(i + 1);
             }
         }
-        if (lt != 0) {
-            answer -= lt;
+
+        if (isInBrace) {
+            if (tmp == 0) {
+                answer -= numbers.get(numbers.size() - 1);
+            } else {
+                tmp += numbers.get(numbers.size() - 1);
+                answer -= tmp;
+            }
+        } else {
+            answer += numbers.get(numbers.size() - 1);
         }
+
+
 
         return answer;
     }
 
-    private void setLists(String formula, ArrayList<Integer> numbers, ArrayList<Character> operators) {
-        int number = 0;
-        for (int i = 0; i < formula.length(); i++) {
-            char now = formula.charAt(i);
-            if (Character.isDigit(now)) {
-                number = number * 10 + (now - '0');
+    private void seperateNumberAndOperation(String str, ArrayList<Integer> numbers, ArrayList<Character> operations) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : str.toCharArray()) {
+            if (Character.isDigit(c)) {
+                sb.append(c);
             } else {
-                numbers.add(number);
-                number = 0;
-                operators.add(now);
+                numbers.add(Integer.parseInt(sb.toString()));
+                operations.add(c);
+                sb.setLength(0);
             }
         }
-        numbers.add(number);
+        numbers.add(Integer.parseInt(sb.toString()));
     }
 
     public static void main(String[] args) {
         Main T = new Main();
         Scanner stdIn = new Scanner(System.in);
 
-        String formula = stdIn.nextLine();
+        String str = stdIn.next();
 
-        System.out.println(T.solution(formula));
+        System.out.println(T.solution(str));
     }
 }
