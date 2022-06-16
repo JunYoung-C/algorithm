@@ -4,18 +4,23 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] parents;
-
-    public int find(int a) {
-        if (parents[a] == a) {
+    public int find(int a, int[] parent) {
+        if (parent[a] == a) {
             return a;
         }
-        return parents[a] = find(parents[a]);
+
+        return parent[a] = find(parent[a], parent);
     }
 
-    public void unite(int a, int b) {
-        parents[a] = b;
+    public void unite(int a, int b, int[] parent) {
+        int fa = find(a, parent);
+        int fb = find(b, parent);
+
+        if (fa != fb) {
+            parent[fb] = fa;
+        }
     }
+
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
@@ -23,39 +28,34 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int maxNumber = Integer.parseInt(st.nextToken());
+        int numberCount = Integer.parseInt(st.nextToken());
         int operationCount = Integer.parseInt(st.nextToken());
-        parents = new int[maxNumber + 1];
-        for (int i = 1; i <= maxNumber; i++) {
-            parents[i] = i;
+
+        int[] parent = new int[numberCount + 1];
+        for (int i = 1; i <= numberCount; i++) {
+            parent[i] = i;
         }
 
-        for (int operation = 0; operation < operationCount; operation++) {
+        for (int i = 0; i < operationCount; i++) {
             st = new StringTokenizer(br.readLine());
-            int type = Integer.parseInt(st.nextToken());
+            int command = Integer.parseInt(st.nextToken()); // 0이면 합집합, 1이면 같은 집합인지 확인
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            if (type == 0) {// 0 : 합집합
-                int fa = T.find(a);
-                int fb = T.find(b);
-                if (fa != fb) {
-                    T.unite(fa, fb);
-                }
-            } else { // 1 : 확인 연산
-                if (hasSameParents(T, a, b)) {
-                    bw.write("YES\n");
-                } else {
-                    bw.write("NO\n");
-                }
+            if (command == 0) {
+
+                T.unite(a, b, parent);
+            } else {
+                int fa = T.find(a, parent);
+                int fb = T.find(b, parent);
+
+                bw.write((fa == fb ? "YES" : "NO") + "\n");
+
             }
         }
 
+        br.close();
         bw.flush();
         bw.close();
-    }
-
-    private static boolean hasSameParents(Main T, int a, int b) {
-        return T.find(a) == T.find(b);
     }
 }
