@@ -1,50 +1,67 @@
 package backjoon.graph.ex1854;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
-class Node implements Comparable<Node>{
-    int index;
+class Edge implements Comparable<Edge> {
+    int destination;
     int cost;
 
-    public Node(int index, int cost) {
-        this.index = index;
+    public Edge(int destination, int cost) {
+        this.destination = destination;
         this.cost = cost;
     }
 
     @Override
-    public int compareTo(Node o) {
+    public int compareTo(Edge o) {
         return this.cost - o.cost;
     }
 }
 
 public class Main {
-    static int[] isVisited;
-    public int[] solution(int nodeCount, int edgeCount, int order, ArrayList<ArrayList<Node>> graph) {
-        int[] nthDis = new int[nodeCount + 1];
-        PriorityQueue<Node> pQ = new PriorityQueue<>();
-        pQ.offer(new Node(1, 0));
+    public int[] solution(int nodeCount, int edgeCount, int nth, ArrayList<ArrayList<Edge>> graph) {
+        int[] answer = new int[nodeCount + 1];
+        TreeSet<Integer>[] distance = new TreeSet[nodeCount + 1];
+        // k번째 숫자가 중복 숫자를 허용하는 건가? priorityQueue로 해보자
+        for (int i = 1; i <= nodeCount; i++) {
+            distance[i] = new TreeSet<>();
+            distance[i].add(Integer.MAX_VALUE);
+        }
+
+        PriorityQueue<Edge> pQ = new PriorityQueue<>();
+        pQ.offer(new Edge(1, 0));
+        distance[1].add(0);
 
         while (!pQ.isEmpty()) {
-            Node now = pQ.poll();
+            Edge currentEdge = pQ.poll();
 
-            if (isVisited[now.index] >= order) {
+            if (distance[currentEdge.destination].first() < currentEdge.cost) {
                 continue;
             }
-            isVisited[now.index]++;
-            nthDis[now.index] = now.cost;
 
-            for (Node next : graph.get(now.index)) {
-                if (isVisited[next.index] < order) {
-                    pQ.offer(new Node(next.index, now.cost + next.cost));
+            for (Edge nextEdge : graph.get(currentEdge.destination)) {
+
+
+                if (distance[nextEdge.destination].first() > distance[currentEdge.destination].first() + nextEdge.cost) {
+                    distance[nextEdge.destination].add(distance[currentEdge.destination].first() + nextEdge.cost);
+                    pQ.offer(new Edge(nextEdge.destination, distance[nextEdge.destination].first()));
+                } else {
+                    distance[nextEdge.destination].add(distance[currentEdge.destination].first() + nextEdge.cost);
+                }
+                if (distance[nextEdge.destination].size() > nth) {
+                    distance[nextEdge.destination].pollLast();
                 }
             }
         }
 
-        return nthDis;
+        for (int i = 1; i <= nodeCount; i++) {
+            if (distance[i].size() == nth && distance[i].last() != Integer.MAX_VALUE) {
+                answer[i] = distance[i].last();
+            } else {
+                answer[i] = -1;
+            }
+        }
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
@@ -55,11 +72,9 @@ public class Main {
 
         int nodeCount = Integer.parseInt(st.nextToken());
         int edgeCount = Integer.parseInt(st.nextToken());
-        int order = Integer.parseInt(st.nextToken());
-        isVisited = new int[nodeCount + 1];
-
-        ArrayList<ArrayList<Node>> graph = new ArrayList<>();
-        for (int i = 0; i <= nodeCount; i++) {
+        int nth = Integer.parseInt(st.nextToken());
+        ArrayList<ArrayList<Edge>> graph = new ArrayList<>();
+        for (int i = 0; i <= edgeCount; i++) {
             graph.add(new ArrayList<>());
         }
 
@@ -68,16 +83,14 @@ public class Main {
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
-            graph.get(a).add(new Node(b, c));
-        }
 
-        int[] minDis = T.solution(nodeCount, edgeCount, order, graph);
+            graph.get(a).add(new Edge(b, c));
+        }
+        br.close();
+        int[] answer = T.solution(nodeCount, edgeCount, nth, graph);
+
         for (int i = 1; i <= nodeCount; i++) {
-            if (isVisited[i] < order) {
-                bw.write(-1 + "\n");
-            } else {
-                bw.write(minDis[i] + "\n");
-            }
+            bw.write(answer[i] + "\n");
         }
         bw.flush();
         bw.close();
