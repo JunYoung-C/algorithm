@@ -1,4 +1,4 @@
-package template.graph.dijkstra;
+package backjoon.graph.ex1916;
 
 import java.io.*;
 import java.util.ArrayList;
