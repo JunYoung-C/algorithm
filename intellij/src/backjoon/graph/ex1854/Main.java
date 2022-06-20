@@ -21,10 +21,10 @@ class Edge implements Comparable<Edge> {
 public class Main {
     public int[] solution(int nodeCount, int edgeCount, int nth, ArrayList<ArrayList<Edge>> graph) {
         int[] answer = new int[nodeCount + 1];
-        TreeSet<Integer>[] distance = new TreeSet[nodeCount + 1];
-        // k번째 숫자가 중복 숫자를 허용하는 건가? priorityQueue로 해보자
+        PriorityQueue<Integer>[] distance = new PriorityQueue[nodeCount + 1];
+
         for (int i = 1; i <= nodeCount; i++) {
-            distance[i] = new TreeSet<>();
+            distance[i] = new PriorityQueue<>();
             distance[i].add(Integer.MAX_VALUE);
         }
 
@@ -35,30 +35,29 @@ public class Main {
         while (!pQ.isEmpty()) {
             Edge currentEdge = pQ.poll();
 
-            if (distance[currentEdge.destination].first() < currentEdge.cost) {
+            if (distance[currentEdge.destination].peek() < currentEdge.cost) {
                 continue;
             }
 
             for (Edge nextEdge : graph.get(currentEdge.destination)) {
 
-
-                if (distance[nextEdge.destination].first() > distance[currentEdge.destination].first() + nextEdge.cost) {
-                    distance[nextEdge.destination].add(distance[currentEdge.destination].first() + nextEdge.cost);
-                    pQ.offer(new Edge(nextEdge.destination, distance[nextEdge.destination].first()));
+                if (distance[nextEdge.destination].peek() > currentEdge.cost + nextEdge.cost) {
+                    distance[nextEdge.destination].add(currentEdge.cost + nextEdge.cost);
+                    pQ.offer(new Edge(nextEdge.destination, currentEdge.cost + nextEdge.cost));
                 } else {
-                    distance[nextEdge.destination].add(distance[currentEdge.destination].first() + nextEdge.cost);
-                }
-                if (distance[nextEdge.destination].size() > nth) {
-                    distance[nextEdge.destination].pollLast();
+                    distance[nextEdge.destination].add(currentEdge.cost + nextEdge.cost);
                 }
             }
         }
 
         for (int i = 1; i <= nodeCount; i++) {
-            if (distance[i].size() == nth && distance[i].last() != Integer.MAX_VALUE) {
-                answer[i] = distance[i].last();
-            } else {
+            if (distance[i].size() <= nth) {
                 answer[i] = -1;
+            } else {
+                for (int j = 0; j < nth - 1; j++) {
+                    distance[i].poll();
+                }
+                answer[i] = distance[i].peek();
             }
         }
         return answer;

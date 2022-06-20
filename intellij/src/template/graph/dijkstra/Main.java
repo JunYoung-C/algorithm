@@ -6,40 +6,40 @@ import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-class Edge implements Comparable<Edge> {
-    int destination;
+class Node implements Comparable<Node> {
+    int index;
     int cost;
 
-    public Edge(int destination, int cost) {
-        this.destination = destination;
+    public Node(int index, int cost) {
+        this.index = index;
         this.cost = cost;
     }
 
     @Override
-    public int compareTo(Edge o) {
+    public int compareTo(Node o) {
         return this.cost - o.cost;
     }
 }
 
 public class Main {
-    public int solution(int nodeCount, int edgeCount, ArrayList<ArrayList<Edge>> graph, int start, int end) {
+    public int solution(int nodeCount, int edgeCount, ArrayList<ArrayList<Node>> graph, int start, int end) {
         int[] distance = new int[nodeCount + 1];
         Arrays.fill(distance, Integer.MAX_VALUE);
-        PriorityQueue<Edge> pQ = new PriorityQueue<>();
-        pQ.offer(new Edge(start, 0));
+        PriorityQueue<Node> pQ = new PriorityQueue<>();
+        pQ.offer(new Node(start, 0));
         distance[start] = 0;
 
         while (!pQ.isEmpty()) {
-            Edge currentEdge = pQ.poll();
+            Node currentNode = pQ.poll();
 
-            if (distance[currentEdge.destination] < currentEdge.cost) {
+            if (distance[currentNode.index] < currentNode.cost) {
                 continue;
             }
 
-            for (Edge nextEdge : graph.get(currentEdge.destination)) {
-                if (distance[nextEdge.destination] > distance[currentEdge.destination] + nextEdge.cost) {
-                    distance[nextEdge.destination] = distance[currentEdge.destination] + nextEdge.cost;
-                    pQ.offer(new Edge(nextEdge.destination, distance[nextEdge.destination]));
+            for (Node nextNode : graph.get(currentNode.index)) {
+                if (distance[nextNode.index] > distance[currentNode.index] + nextNode.cost) {
+                    distance[nextNode.index] = distance[currentNode.index] + nextNode.cost;
+                    pQ.offer(new Node(nextNode.index, distance[nextNode.index]));
                 }
             }
         }
@@ -55,7 +55,7 @@ public class Main {
 
         int nodeCount = Integer.parseInt(st.nextToken());
         int edgeCount = Integer.parseInt(br.readLine());
-        ArrayList<ArrayList<Edge>> graph = new ArrayList<>();
+        ArrayList<ArrayList<Node>> graph = new ArrayList<>();
 
         for (int i = 0; i <= nodeCount;i++) {
             graph.add(new ArrayList<>());
@@ -67,7 +67,7 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            graph.get(a).add(new Edge(b, c));
+            graph.get(a).add(new Node(b, c));
         }
 
         st = new StringTokenizer(br.readLine());
