@@ -14,19 +14,17 @@ public class Main {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int INF = 100000000;
-        int nodeCount = Integer.parseInt(br.readLine());
+        int nodeCount = Integer.parseInt(st.nextToken());
         int edgeCount = Integer.parseInt(br.readLine());
-
-        int[][] minDis = new int[nodeCount + 1][nodeCount + 1];
+        int[][] graph = new int[nodeCount + 1][nodeCount + 1];
         for (int i = 1; i <= nodeCount; i++) {
             for (int j = 1; j <= nodeCount; j++) {
                 if (i == j) {
-                    minDis[i][j] = 0;
+                    graph[i][j] = 0;
                 } else {
-                    minDis[i][j] = INF;
+                    graph[i][j] = Integer.MAX_VALUE;
                 }
             }
         }
@@ -37,30 +35,36 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            if (minDis[a][b] > c) {
-                minDis[a][b] = c;
+            if (graph[a][b] == 0) {
+                graph[a][b] = c;
+            } else {
+                graph[a][b] = Math.min(graph[a][b], c);
             }
         }
 
+
         for (int k = 1; k <= nodeCount; k++) {
-            for (int a = 1; a <= nodeCount; a++) {
-                for (int b = 1; b <= nodeCount; b++) {
-                    minDis[a][b] = Math.min(minDis[a][k] + minDis[k][b], minDis[a][b]);
+            for (int i = 1; i <= nodeCount; i++) {
+                for (int j = 1; j <= nodeCount; j++) {
+                    if (graph[i][k] != Integer.MAX_VALUE && graph[k][j] != Integer.MAX_VALUE) {
+                        graph[i][j] = Math.min(graph[i][j], graph[i][k] + graph[k][j]);
+                    }
                 }
             }
         }
 
-        for (int a = 1; a <= nodeCount; a++) {
-            for (int b = 1; b <= nodeCount; b++) {
-                if (minDis[a][b] == INF) {
-                    bw.write("0 ");
+        br.close();
+
+        for (int i = 1; i <= nodeCount; i++) {
+            for (int j = 1; j <= nodeCount; j++) {
+                if (graph[i][j] == Integer.MAX_VALUE) {
+                    bw.write(0+ " ");
                 } else {
-                    bw.write(minDis[a][b] + " ");
+                    bw.write(graph[i][j]+ " ");
                 }
             }
             bw.newLine();
         }
-
         bw.flush();
         bw.close();
     }

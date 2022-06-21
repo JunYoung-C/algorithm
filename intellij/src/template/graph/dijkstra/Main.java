@@ -32,7 +32,7 @@ public class Main {
         while (!pQ.isEmpty()) {
             Node currentNode = pQ.poll();
 
-            if (distance[currentNode.index] < currentNode.cost) {
+            if (distance[currentNode.index] < currentNode.cost) { // isVisited로도 가능
                 continue;
             }
 
