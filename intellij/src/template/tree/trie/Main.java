@@ -1,4 +1,4 @@
-package backjoon.tree.ex14425;
+package template.tree.trie;
 
 import java.io.*;
 import java.util.StringTokenizer;
