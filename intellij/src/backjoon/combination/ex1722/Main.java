@@ -1,10 +1,10 @@
 package backjoon.combination.ex1722;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
-    static long[] factorial;
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
@@ -12,70 +12,46 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int maxNumber = Integer.parseInt(st.nextToken());
-        setFactorial(maxNumber);
+        int n = Integer.parseInt(st.nextToken());
+
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            numbers.add(i);
+        }
+
+        long[] dp = new long[n + 1];
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] * i;
+        }
 
         st = new StringTokenizer(br.readLine());
         int command = Integer.parseInt(st.nextToken());
-        int[] numbers = new int[maxNumber + 1];
-        boolean[] isUsed = new boolean[maxNumber + 1];
-
-        if (command == 1) { // k번째 순열 출력
-            long sequence = Long.parseLong(st.nextToken());
-
-            for (int i = 1; i <= maxNumber; i++) {
-                for (int j = 1, cnt = 1; j <= maxNumber; j++) {
-                    if (isUsed[j]) {
-                        continue;
-                    }
-                    if (factorial[maxNumber - i] * cnt >= sequence) {
-                        numbers[i] = j;
-                        isUsed[j] = true;
-                        sequence -= factorial[maxNumber - i] * (cnt - 1);
-                        break;
-                    }
-                    cnt++;
-                }
+        if (command == 1) {
+            // k번째 수열 출력
+            long order = Long.parseLong(st.nextToken()) - 1;
+            for (int num = n; num > 1; num--) {
+                int index = (int)(order / dp[num - 1]);
+                System.out.print(numbers.get(index) + " ");
+                numbers.remove(index);
+                order %= dp[num - 1];
             }
 
-            for (int i = 1; i <= maxNumber; i++) {
-                bw.write(numbers[i] + " ");
+            System.out.print(numbers.get(0) + " ");
+
+        } else {
+            // 수열에 해당되는 순서 출력
+            long order = 1;
+            for (int i = 1; i <= n; i++) {
+                int number = Integer.parseInt(st.nextToken());
+                order += (long) numbers.indexOf(number) * dp[(numbers.size() - 1)];
+                numbers.remove((Integer) number);
             }
-
-        } else if (command == 2) { // 입력받은 순열의 순서 출력
-            for (int i = 1; i <= maxNumber; i++) {
-                numbers[i] = Integer.parseInt(st.nextToken());
-            }
-            long sequence = 0;
-
-            for (int i = 1; i <= maxNumber; i++) {
-                for (int j = 1, cnt = 1; j <= maxNumber; j++) {
-                    if (isUsed[j]) {
-                        continue;
-                    }
-
-                    if (numbers[i] == j) {
-                        sequence += factorial[maxNumber - i] * (cnt - 1);
-                        isUsed[j] = true;
-                        break;
-                    }
-
-                    cnt++;
-                }
-            }
-
-            bw.write(sequence + 1 + "");
+            System.out.println(order);
         }
 
+        br.close();
         bw.flush();
         bw.close();
-    }
-
-    private static void setFactorial(int maxNumber) {
-        factorial = new long[maxNumber + 1];
-        factorial[0] = 1;
-        for (int i = 1; i <= maxNumber; i++) {
-            factorial[i] = factorial[i - 1] * i;
-        }
     }
 }
