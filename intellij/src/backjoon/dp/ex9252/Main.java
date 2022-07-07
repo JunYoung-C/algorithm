@@ -4,40 +4,57 @@ import java.io.*;
 
 public class Main {
     StringBuilder sb = new StringBuilder();
-    int[][] dp;
-    public void solution(String str1, String str2) {
-        int len1 = str1.length();
-        int len2 = str2.length();
-        dp = new int[len1 + 1][len2 + 1];
 
-        for (int i = 1; i <= len1; i++) {
-            for (int j = 1; j <= len2; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
+    public void solution(String str1, String str2) {
+        char[] charArr1 = str1.toCharArray();
+        char[] charArr2 = str2.toCharArray();
+        int width = charArr1.length;
+        int height = charArr2.length;
+
+        int[][] dp = new int[height + 1][width + 1];
+        for (int row = 1; row <= height; row++) {
+            for (int col = 1; col <= width;col++) {
+                if (charArr1[col - 1] == charArr2[row - 1]) {
+                    dp[row][col] = dp[row - 1][col - 1] + 1;
                 } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[row][col] = Math.max(dp[row - 1][col], dp[row][col - 1]);
                 }
             }
         }
 
-        System.out.println(dp[len1][len2]);
-        getText(len1, len2, str1, str2);
-        System.out.println(sb.reverse());
-    }
-
-    private void getText(int r, int c, String str1, String str2) {
-        if (r == 0 || c == 0) {
+        System.out.println(dp[height][width]);
+        if (dp[height][width] == 0) {
             return;
         }
 
-        if (str1.charAt(r - 1) == str2.charAt(c - 1)) {
-            sb.append(str1.charAt(r - 1));
-            getText(r - 1, c - 1, str1, str2);
+        dfs(height, width, dp, charArr1, charArr2);
+//        for (int row = 1; row <= height; row++) {
+//            for (int col = 1; col <= width;col++) {
+//                System.out.print(dp[row][col] + " ");
+//            }
+//
+//            System.out.println();
+//        }
+
+
+
+    }
+
+    private void dfs(int y, int x, int[][] dp, char[] charArr1, char[] charArr2) {
+        if (charArr1[x - 1] == charArr2[y - 1]) {
+            // 왼쪽 위로 이동
+            sb.append(charArr1[x - 1]);
+            if (dp[y][x] == 1) {
+                System.out.println(sb.reverse());
+                return;
+            }
+            dfs(y - 1, x - 1, dp, charArr1, charArr2);
         } else {
-            if (dp[r - 1][c] > dp[r][c - 1]) {
-                getText(r - 1, c, str1, str2);
+            // 왼쪽과 위쪽 중 큰 쪽으로 이동
+            if (dp[y - 1][x] > dp[y][x - 1]) {
+                dfs(y - 1, x, dp, charArr1, charArr2);
             } else {
-                getText(r, c - 1, str1, str2);
+                dfs(y, x - 1, dp, charArr1, charArr2);
             }
         }
     }
@@ -49,6 +66,7 @@ public class Main {
         String str1 = br.readLine();
         String str2 = br.readLine();
 
+        br.close();
         T.solution(str1, str2);
     }
 }
