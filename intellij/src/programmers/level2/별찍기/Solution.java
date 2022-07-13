@@ -1,4 +1,4 @@
-package programmers.level2.ex1.별찍기;
+package programmers.level2.별찍기;
 
 import java.util.Scanner;
 
