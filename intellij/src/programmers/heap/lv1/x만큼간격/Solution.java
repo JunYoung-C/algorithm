@@ -1,4 +1,4 @@
-package programmers.level2.x만큼간격;
+package programmers.heap.lv1.x만큼간격;
 
 class Solution {
     public long[] solution(int x, int n) {
