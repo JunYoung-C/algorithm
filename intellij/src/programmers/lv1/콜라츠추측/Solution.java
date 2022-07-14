@@ -1,4 +1,4 @@
-package programmers.heap.lv1.콜라츠추측;
+package programmers.lv1.콜라츠추측;
 
 class Solution {
     public int solution(long num) {

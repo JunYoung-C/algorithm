@@ -1,4 +1,4 @@
-package programmers.heap.lv1.별찍기;
+package programmers.lv1.별찍기;
 
 import java.util.Scanner;
 

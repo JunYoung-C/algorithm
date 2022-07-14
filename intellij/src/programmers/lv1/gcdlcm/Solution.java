@@ -1,4 +1,4 @@
-package programmers.heap.lv1.gcdlcm;
+package programmers.lv1.gcdlcm;
 
 class Solution {
     public int[] solution(int n, int m) {
