@@ -2,43 +2,39 @@ package programmers.lv2.삼각달팽이;
 
 class Solution {
     public int[] solution(int n) {
-        int[] dp = new int[n + 1];
-        dp[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            dp[i] = dp[i - 1] + i;
-        }
+        int maxNum = (1 + n) * n / 2;
+        int[] answer = new int[maxNum];
+        int[][] matrix = new int[n][n];
 
-        int[] answer = new int[dp[n]];
-        int index = 0;
-        int len = n;
+        int x = 0, y = 0, dir = 0;
+        int[] dx = {0, 1, -1}; // 하, 우, 좌상
+        int[] dy = {1, 0, -1};
+        int sideLen = n;
         int count = 0;
-        int status = 0; // 0 : 왼쪽 아래로, 1 : 오른쪽으로, 2 : 오른쪽 위로
-        int plusValue = 0;
-        int minusValue = 0;
-        for (int num = 1; num <= n; num++) {
-            answer[index] = num;
+        for (int num = 1; num <= maxNum; num++) {
+            matrix[y][x] = num;
             count++;
-            if (count == len) {
-                status = (status + 1) % 3;
-                len--;
-                if (status == 0) {
 
-                } else if (status == 1) {
-                    minusValue = len + 1;
-                }
+            if (count == sideLen) {
+                count = 0;
+                sideLen--;
+                dir = (dir + 1) % 3;
             }
 
-            // 인덱스 전환
-            if (status == 0) {
-
-            } else if (status == 1) {
-                index++;
-            } else {
-                index -= minusValue;
-                minusValue--;
-            }
+            y += dy[dir];
+            x += dx[dir];
         }
 
+        int index = 0;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                if (matrix[r][c] == 0) {
+                    continue;
+                }
+
+                answer[index++] = matrix[r][c];
+            }
+        }
 
         return answer;
     }
