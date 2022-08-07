@@ -2,6 +2,21 @@ package programmers.kakao.lv2.메뉴리뉴얼;
 
 import java.util.*;
 
+class MenuInfo implements Comparable<MenuInfo>{
+    String menu;
+    int count;
+
+    public MenuInfo(String menu, int count) {
+        this.menu = menu;
+        this.count = count;
+    }
+
+    @Override
+    public int compareTo(MenuInfo o) {
+        return o.count - this.count;
+    }
+}
+
 class Solution {
     HashMap<String, Integer> map = new HashMap<>();
 
@@ -18,20 +33,29 @@ class Solution {
             return o2.length() - o1.length();
         });
 
-        for (int count : course) {
-            ArrayList<String> tmp = new ArrayList<>();
+        for (int courseCount : course) {
+            ArrayList<MenuInfo> menuList = new ArrayList<>();
 
             for (String key : map.keySet()) {
-                if (map.get(key) == count) {
-                    System.out.print(key + " ");
-                }
-                if (map.get(key) == count && !contains(tmp, key)) {
-                    tmp.add(key);
+                if (key.length() == courseCount) {
+                    menuList.add(new MenuInfo(key, map.get(key)));
                 }
             }
-            System.out.println();
 
-            courseList.addAll(tmp);
+            if (menuList.isEmpty()) {
+                continue;
+            }
+
+            Collections.sort(menuList);
+            int maxCount = menuList.get(0).count;
+            if (maxCount < 2) {
+                continue;
+            }
+            for (MenuInfo menuInfo : menuList) {
+                if (menuInfo.count == maxCount) {
+                    courseList.add(menuInfo.menu);
+                }
+            }
         }
 
         int len = courseList.size();
@@ -41,42 +65,6 @@ class Solution {
         }
         Arrays.sort(answer);
         return answer;
-    }
-
-    private boolean contains(ArrayList<String> strList, String target) {
-        HashMap<Character, Boolean> map = new HashMap<>();
-        for (String str : strList) {
-            for (char c : target.toCharArray()) {
-                map.put(c, true);
-            }
-
-            for (char c : str.toCharArray()) {
-                map.put(c, true);
-            }
-
-            if (map.size() == str.length()) {
-                return true;
-            } else if (map.size() == target.length()) {
-                strList.remove(str);
-            }
-        }
-
-//         String[] splitedTarget = target.split("");
-//         int len = target.length();
-//         for (String str : strList) {
-//             int count = 0;
-//             for (String t : splitedTarget) {
-//                 if (!str.contains(t)) {
-//                     count++;
-//                 }
-//             }
-
-//             if (count == len) {
-//                 return true;
-//             }
-//         }
-
-        return false;
     }
 
     private void insertData(char[] order, int depth, String key) {
