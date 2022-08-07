@@ -10,22 +10,29 @@ class Solution {
         int width = relation[0].length;
         int height = relation.length;
         dfs(-1, "", relation, width);
-        Collections.sort(keys);
+
+        Collections.sort(keys, (o1, o2) -> {
+            if (o1.length() == o2.length()) {
+                return o1.compareTo(o2);
+            }
+
+            return o1.length() - o2.length();
+        });
+
         ArrayList<String> uniqueKeys = new ArrayList<>();
         for (String key : keys) {
             if (satisfyMinimality(key, uniqueKeys)) {
                 uniqueKeys.add(key);
             }
         }
+
         return uniqueKeys.size();
     }
 
     private void dfs(int lastIndex, String key, String[][] relation, int len) {
 
-        if (!key.equals("")) {
-            if (satisfyUniqueness(relation, key)) {
-                keys.add(key);
-            }
+        if (!key.equals("") && satisfyUniqueness(relation, key)) {
+            keys.add(key);
         }
 
         if (key.length() == len) {
@@ -55,11 +62,24 @@ class Solution {
     }
 
     private boolean satisfyMinimality(String target, ArrayList<String> keys) {
+        HashMap<Character, Boolean> map = new HashMap<>();
+
         for (String key : keys) {
-            if (target.startsWith(key)) {
+            map.clear();
+
+            for (char c : target.toCharArray()) {
+                map.put(c, true);
+            }
+
+            for (char c : key.toCharArray()) {
+                map.put(c, true);
+            }
+
+            if (map.size() == target.length()) {
                 return false;
             }
         }
+
         return true;
     }
 }
