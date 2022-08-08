@@ -5,12 +5,10 @@ import java.util.*;
 class Solution {
     public int solution(int[] arr) {
         int answer = arr[0];
-        int len = arr.length;
-        for (int i = 1; i < len; i++) {
+        for (int i = 1; i < arr.length; i++) {
             int gcd = gcd(answer, arr[i]);
-            answer *= arr[i] / gcd;
+            answer = (answer * arr[i]) / gcd;
         }
-
         return answer;
     }
 
