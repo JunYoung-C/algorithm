@@ -1,61 +1,42 @@
 package programmers.lv2.전력망을둘로나누기;
 
+import java.util.*;
+
 class Solution {
+    ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
     boolean[] isVisited;
-    int[][] graph;
+    int answer = Integer.MAX_VALUE;
+
     public int solution(int n, int[][] wires) {
-        int answer = Integer.MAX_VALUE;
-        graph = new int[n + 1][n + 1];
         isVisited = new boolean[n + 1];
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList<>());
+        }
+
         for (int[] wire : wires) {
-            graph[wire[0]][wire[1]] = 1;
-            graph[wire[1]][wire[0]] = 1;
+            int a = wire[0];
+            int b = wire[1];
+            graph.get(a).add(b);
+            graph.get(b).add(a);
         }
 
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (graph[i][j] == 1) {
-                    graph[i][j] = 0;
-                    graph[j][i] = 0;
-                    answer = Math.min(answer, getDifference(n));
-                    // System.out.println(answer + " " + i + " " + j);
-                    isVisited = new boolean[n + 1];
-                    graph[i][j] = 1;
-                    graph[j][i] = 1;
-                }
-            }
-        }
-
+        isVisited[1] = true;
+        dfs(1, n);
         return answer;
     }
 
-    private int getDifference(int n) {
-        int dif = 0;
-        int count = 0;
-        for (int i = 1; i <= n; i++) {
-            if (!isVisited[i]) {
-                isVisited[i] = true;
-                count = dfs(n, i);
-                // System.out.print(count + " ");
-                if (dif == 0) {
-                    dif += count;
-                } else {
-                    dif -= count;
-                }
-            }
-        }
-        return Math.abs(dif);
-    }
+    private int dfs(int current, int n) {
+        int childCount = 1;
 
-    private int dfs(int n, int now) {
-        int count = 0;
-        for (int next = 1; next <= n; next++) {
-            if (graph[now][next] == 1 && !isVisited[next]) {
+        for (int next : graph.get(current)) {
+            if (!isVisited[next]) {
                 isVisited[next] = true;
-                count += dfs(n, next);
+                childCount += dfs(next, n);
+                isVisited[next] = false;
             }
         }
 
-        return count + 1;
+        answer = Math.min(answer, Math.abs(childCount - (n - childCount)));
+        return childCount;
     }
 }
