@@ -1,135 +1,75 @@
 package programmers.lv3.아이템줍기;
 
+import java.util.*;
+
 class Solution {
     int[] dx = {0, 1, 0, -1};
     int[] dy = {-1, 0, 1, 0};
-    int[] dx2 = {0, 1, 1, 1, 0, -1, -1, -1};
-    int[] dy2 = {-1, -1, 0, 1, 1, 1, 0, -1};
-    boolean[][] board = new boolean[51][51];
-    boolean[][] isVisited = new boolean[51][51];
+    int[][] board = new int[51][51];
     int answer = Integer.MAX_VALUE;
 
     public int solution(int[][] rectangles, int characterX, int characterY,
                         int itemX, int itemY) {
-        int index = 1;
-        for (int[] rectangle : rectangles) {
-            // col1, row1, col2, row2
-            for (int r = rectangle[1] + 1; r < rectangle[3]; r++) {
-                for (int c = rectangle[0] + 1; c < rectangle[2]; c++) {
-                    board[r][c] = true;
+        int len = rectangles.length;
+        for (int r = 0; r <= 50; r++) {
+            Arrays.fill(board[r], -1);
+        }
+
+        for (int[] rec : rectangles) {
+            int c1 = rec[0];
+            int r1 = rec[1];
+            int c2 = rec[2];
+            int r2 = rec[3];
+            // 상 : 0, 우 : 1, 하 : 2, 좌 : 3
+            for (int c = c1; c < c2; c++) {
+                if (board[r1][c] == 0) {
+                    continue;
                 }
+                board[r1][c] = 1;
             }
-            index++;
+
+            for (int r = r1; r < r2; r++) {
+                if (board[r][c2] == 1) {
+                    continue;
+                }
+                board[r][c2] = 2;
+            }
+
+            for (int c = c2; c > c1; c--) {
+                if (board[r2][c] == 2) {
+                    continue;
+                }
+                board[r2][c] = 3;
+            }
+
+            for (int r = r2; r > r1; r--) {
+                if (board[r][c1] == 3) {
+                    continue;
+                }
+                board[r][c1] = 0;
+            }
         }
 
-        isVisited[characterY][characterX] = true;
-        dfs(characterY, characterX, itemY, itemX, 0, -1);
+        // for (int r = 0; r <= 10; r++) {
+        //     for (int c = 0; c <= 10; c++) {
+        //         System.out.print(board[r][c] + "\t");
+        //     }
+        //     System.out.println();
+        // }
 
-        for (int r = 10; r >= 0; r--) {
-            for (int c = 0; c <= 10; c++) {
-                System.out.print((board[r][c] ? 1 : 0) + " ");
-            }
-            System.out.println();
-        }
+        dfs(characterY, characterX, itemY, itemX, 0);
+        dfs(itemY, itemX, characterY, characterX, 0);
+
         return answer;
     }
 
-    private void dfs(int y, int x, int itemY, int itemX, int depth, int currentDir) {
-        if (itemX == x && itemY == y) {
-            answer = Math.min(answer, depth);
-            for (int r = 10; r >= 0; r--) {
-                // for (int c = 0; c <= 10; c++) {
-                //     System.out.print((isVisited[r][c] ? 1 : 0) + " ");
-                // }
-                // System.out.println();
-            }
-
-            System.out.println();
-
+    private void dfs(int y, int x, int targetY, int targetX, int count) {
+        if (y == targetY && x == targetX) {
+            answer = Math.min(answer, count);
             return;
         }
 
-        for (int dir = 0; dir < 4; dir++) {
-            int ny = y + dy[dir];
-            int nx = x + dx[dir];
-
-            if (nx < 0 || nx > 50 || ny < 0 || ny > 50) {
-                continue;
-            }
-
-            if (!isVisited[ny][nx] && isRound(ny, nx, currentDir, dir)) {
-                isVisited[ny][nx] = true;
-
-                dfs(ny, nx, itemY, itemX, depth + 1, dir);
-
-                isVisited[ny][nx] = false;
-            }
-        }
-    }
-
-    private boolean isRound(int y, int x, int currentDir, int nextDir) {
-        if (board[y][x] == true) {
-            return false;
-        }
-
-        if (currentDir != -1) {
-            int count = 0;
-            int py = y - dy[currentDir];
-            int px = x - dx[currentDir];
-            if (currentDir == 0 || currentDir == 0) {
-                if (px - 1 >= 0) {
-                    count += board[py][px - 1] ? 1 : 0;
-                }
-
-                if (px + 1 <= 50) {
-                    count += board[py][px + 1] ? 1 : 0;
-                }
-            } else {
-                if (py - 1 >= 0) {
-                    count += board[py - 1][px] ? 1 : 0;
-                }
-
-                if (py + 1 <= 50) {
-                    count += board[py + 1][px] ? 1 : 0;
-                }
-            }
-
-            if (nextDir == 0 || currentDir == 0) {
-                if (x - 1 >= 0) {
-                    count += board[y][x - 1] ? 1 : 0;
-                }
-
-                if (x + 1 <= 50) {
-                    count += board[y][x + 1] ? 1 : 0;
-                }
-            } else {
-                if (y - 1 >= 0) {
-                    count += board[y - 1][x] ? 1 : 0;
-                }
-
-                if (y + 1 <= 50) {
-                    count += board[y + 1][x] ? 1 : 0;
-                }
-            }
-
-            if (count == 0) {
-                return false;
-            }
-        }
-
-        for (int dir = 0; dir < 8; dir++) {
-            int ny = y + dy2[dir];
-            int nx = x + dx2[dir];
-
-            if (nx < 0 || nx > 50 || ny < 0 || ny > 50) {
-                continue;
-            }
-
-            if (board[ny][nx] == true) {
-                return true;
-            }
-        }
-
-        return false;
+        int dir = board[y][x];
+        dfs(y + dy[dir], x + dx[dir], targetY, targetX, count + 1);
     }
 }
