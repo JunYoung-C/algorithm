@@ -7,7 +7,7 @@ class Solution {
         int answer = 0;
         int len = cores.length;
         if (n <= len) {
-            return cores[n - 1];
+            return n;
         }
 
         int lt = 1, rt = 250000000;
@@ -23,23 +23,19 @@ class Solution {
         }
 
         ArrayList<Integer> targetCores = new ArrayList<>();
-        for (int core : cores) {
-            if (answer % core == 0) {
-                targetCores.add(core);
+        for (int i = 0; i < len; i++) {
+            if (answer % cores[i] == 0) {
+                targetCores.add(i + 1);
             }
         }
+
         int index = targetCores.size() - 1 - (int)(getProcessCount(answer, cores) - n);
 
-        System.out.println(answer);
-        System.out.println(index);
-        System.out.println(targetCores.size() - 1);
-        System.out.println(getProcessCount(answer, cores) - n);
         return targetCores.get(index);
     }
 
     private long getProcessCount(int passedTime, int[] cores) {
-        int len = cores.length;
-        long count = len;
+        long count = cores.length;
 
         for (int core : cores) {
             count += passedTime / core;
