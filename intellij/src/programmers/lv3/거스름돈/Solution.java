@@ -1,33 +1,24 @@
 package programmers.lv3.거스름돈;
 
-import java.util.*;
-
 class Solution {
     public int solution(int n, int[] money) {
-        Arrays.sort(money);
         int answer = 0;
-        int minMoney = money[0];
-        int[] dp = new int[n + 1];
-        if (minMoney > n) {
-            return 0;
+        int moneyLen = money.length;
+        int[][] dp = new int[moneyLen + 1][n + 1];
+        for (int i = 1; i <= moneyLen; i++) {
+            dp[i][0] = 1;
         }
 
-        dp[minMoney] = 1;
-        for (int num = minMoney + 1; num <= n; num++) {
-            long count = dp[num - minMoney];
-
-            for (int i = 1; i < money.length; i++) {
-                if (num % money[i] == 0) {
-                    count++;
+        for (int row = 1; row <= moneyLen; row++) {
+            for (int j = 1; j <= n; j++) {
+                if (j - money[row - 1] < 0) {
+                    dp[row][j] = dp[row - 1][j];
+                } else {
+                    dp[row][j] = (dp[row][j - money[row - 1]] + dp[row - 1][j]) % 1000000007;
                 }
             }
-
-            dp[num] = (int)(count % 1000000007);
         }
 
-        for (int i : dp) {
-            System.out.print(i + " ");
-        }
-        return dp[n];
+        return dp[moneyLen][n];
     }
 }
