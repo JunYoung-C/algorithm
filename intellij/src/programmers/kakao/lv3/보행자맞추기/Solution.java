@@ -1,4 +1,4 @@
-package programmers.kakao.보행자맞추기;
+package programmers.kakao.lv3.보행자맞추기;
 
 class Solution {
     int MOD = 20170805;
