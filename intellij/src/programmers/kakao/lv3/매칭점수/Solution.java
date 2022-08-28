@@ -25,7 +25,7 @@ class Solution {
             }
         }
 
-        double maxPoint = 0;
+        double maxPoint = -1;
         int index = -1;
         for (String url : pageInfoMap.keySet()) {
             PageInfo pageInfo = pageInfoMap.get(url);
@@ -70,22 +70,12 @@ class Solution {
 
         StringBuilder sb = new StringBuilder();
         for (String str : splitPage) {
-            if (!str.startsWith("https://")) {
+            int index = str.indexOf("\">");
+            if (!str.startsWith("https://") || index == -1) {
                 continue;
             }
 
-            int index = 0;
-            while (true) {
-                char c = str.charAt(index++);
-                if (c == '"') {
-                    break;
-                }
-
-                sb.append(c);
-            }
-
-            links.add(sb.toString());
-            sb.setLength(0);
+            links.add(str.substring(0, index));
         }
 
         return links;
@@ -122,4 +112,3 @@ class PageInfo {
         this.links = links;
     }
 }
-
