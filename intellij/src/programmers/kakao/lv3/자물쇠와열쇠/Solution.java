@@ -1,93 +1,75 @@
 package programmers.kakao.lv3.자물쇠와열쇠;
 
 class Solution {
-    int[] dx = {0, 1, 0, -1};
-    int[] dy = {-1, 0, 1, 0};
-
     public boolean solution(int[][] key, int[][] lock) {
-        int[][] movedKey;
-        // for (int i = 0; i < 4; i++) {
-        //     key = movedKey = rotate(key);
-        //     for (int j = 0; j < key.length; j++) {
-        //         if (isAbleToCombine(movedKey, lock)) {
-        //             return true;
-        //         }
-        //         movedKey = move(movedKey, i);
-        //     }
-        // }
-        key = rotate(key);
-        key = rotate(key);
-        key = move(key, 2);
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3;col++) {
-                System.out.print(key[row][col] + " ");
+        lock = createLargeLock(lock, key.length);
+        for (int i = 0; i < 4; i++) {
+            if (isAbleToCombine(key, lock)) {
+                return true;
             }
-            System.out.println();
+            key = rotate(key);
         }
-        // isAbleToCombine(key, lock);
+
+
         return false;
     }
 
     private boolean isAbleToCombine(int[][] key, int[][] lock) {
-        boolean isAbleToCombine = false;
-        int lockLen = lock.length;
-        int keyLen = key.length;
-
-        for (int keyRow = 0; keyRow <= lockLen - keyLen; keyRow++) {
-            for (int keyCol = 0; keyCol <= lockLen - keyLen; keyCol++) {
-                if (isCombined(key, lock, keyRow, keyCol)) {
+        for (int r = 0; r <= lock.length - key.length; r++) {
+            for (int c = 0; c <= lock.length - key.length; c++) {
+                if (isCombined(r, c, lock, key)) {
                     return true;
                 }
             }
         }
 
-        return isAbleToCombine;
+        return false;
     }
 
-    private boolean isCombined(int[][] key, int[][] lock, int keyRow, int keyCol) {
-        int lockLen = lock.length;
+    private boolean isCombined(int r1, int c1, int[][] lock, int[][] key) {
         int keyLen = key.length;
-
-        for (int row = 0; row < lockLen; row++) {
-            for (int col = 0; col < lockLen; col++) {
-                if (row - keyRow >= 0 && row - keyRow < keyLen &&
-                        col - keyCol >= 0 && col - keyCol < keyLen) {
-                    // if (lock[row][col] + key[row - keyRow][col - keyCol] != 1) {
-                    //     return false;
-                    // }
-
-                    System.out.print(lock[row][col] + key[row - keyRow][col - keyCol] + " ");
-                } else {
-//                     if (lock[row][col] != 1) {
-//                         return false;
-//                     }
-
-                    System.out.print(key[row - keyRow][col - keyCol] + " ");
-                }
+        int len = lock.length;
+        boolean isCombined = true;
+        for (int r = r1; r < r1 + keyLen; r++) {
+            for (int c = c1; c < c1 + keyLen; c++) {
+                lock[r][c] += key[r - r1][c - c1];
             }
-            System.out.println();
         }
 
-        return true;
+        for (int r = keyLen - 1; r <= len - keyLen; r++) {
+            for (int c = keyLen - 1; c <= len - keyLen; c++) {
+                // System.out.println(r + " " + c);
+                if (lock[r][c] != 1) {
+                    isCombined = false;
+                }
+            }
+        }
+
+        // for (int r = 0; r < len; r++) {
+        //     for (int c = 0; c < len; c++) {
+        //         System.out.print(lock[r][c] + " ");
+        //     }
+        //     System.out.println();
+        // }
+        // System.out.println();
+
+        for (int r = r1; r < r1 + keyLen; r++) {
+            for (int c = c1; c < c1 + keyLen; c++) {
+                lock[r][c] -= key[r - r1][c - c1];
+            }
+        }
+        return isCombined;
     }
 
-    private int[][] move(int[][] board, int dir) {
-        int len = board.length;
-        int[][] movedBoard = new int[len][len];
-        if (dir == 1 || dir == 2) {
-            for (int row = dy[dir]; row < len; row++) {
-                for (int col = dx[dir]; col < len; col++) {
-                    movedBoard[row][col] = board[row - dy[dir]][col - dx[dir]];
-                }
-            }
-        } else {
-            for (int row = 0; row < len + dy[dir]; row++) {
-                for (int col = 0; col < len + dx[dir]; col++) {
-                    movedBoard[row][col] = board[row - dy[dir]][col - dx[dir]];
-                }
+    private int[][] createLargeLock(int[][] lock, int keyLength) {
+        int len = keyLength * 2 + lock.length - 2;
+        int[][] largeLock = new int[len][len];
+        for (int r = 0; r < lock.length; r++) {
+            for (int c = 0; c < lock.length; c++) {
+                largeLock[r + keyLength - 1][c + keyLength - 1] = lock[r][c];
             }
         }
-        return movedBoard;
+        return largeLock;
     }
 
     private int[][] rotate(int[][] board) {
