@@ -5,86 +5,118 @@ import java.util.*;
 class Solution {
     int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
     int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
-    boolean[][][] isVisited;
 
     public int solution(int[][] board) {
         int answer = 0;
+        final int HORIZONTAL = 0;
+        final int VERTICAL = 1;
         int len = board.length;
+        boolean[][][] isVisited = new boolean[2][len][len];
         int L = 0;
-        isVisited = new boolean[8][len][len];
+        isVisited[HORIZONTAL][0][1] = isVisited[HORIZONTAL][0][0] = true;
         Queue<Location> que = new LinkedList<>();
         que.offer(new Location(0, 0, 1, 0));
-        for (int i = 0; i < 8; i++) {
-            isVisited[i][0][0] = isVisited[i][0][1] = true;
-        }
 
         while (!que.isEmpty()) {
             int size = que.size();
+
             for (int i = 0; i < size; i++) {
                 Location now = que.poll();
-                // System.out.println("[" + now.x1 + ", " + now.y1 + "],[" + now.x2 + ", " + now.y2 + "]");
-                if (now.x2 == len - 1 && now.y2 == len - 1) {
+                // System.out.println(now.x1 + "," + now.y1 + " " + now.x2 + "," + now.y2);
+                if ((now.x2 == len - 1) && (now.y2 == len - 1)) {
                     return L;
                 }
 
-                for (int dir = 0; dir < 8; dir++) {
+                for (int dir = 0; dir < dx.length; dir++) {
                     int nx1 = now.x1 + dx[dir];
                     int ny1 = now.y1 + dy[dir];
                     int nx2 = now.x2 + dx[dir];
                     int ny2 = now.y2 + dy[dir];
+                    // System.out.println(nx1 + "," + ny1 + " " + nx2 + "," + ny2);
 
-                    if (dir % 2 == 1) { // 대각선 이동
-                        if (ny2 == now.y1 || nx2 == now.x1) { // nx2, ny2가 회전
-                            if (!isValid(nx2, ny2, len, board) || isVisited[dir][ny2][nx2]) {
-                                continue;
-                            }
-
-                            if ((!now.isVertical() && board[ny2][now.x2] == 0) ||
-                                    (now.isVertical() && board[now.y2][nx2] == 0)) {
-                                // ㅡ -> |, | -> ㅡ
-                                isVisited[dir][ny2][nx2] = true;
-                                que.offer(new Location(now.x1, now.y1, nx2, ny2));
-                            }
-                        } else if (nx1 == now.x2 || ny1 == now.y2) {
-                            if (!isValid(nx1, ny1, len, board) || isVisited[dir][ny1][nx1]) {
-                                continue;
-                            }
-
-                            if ((!now.isVertical() && board[ny1][now.x1] == 0) ||
-                                    (now.isVertical() && board[now.y1][nx1] == 0)) {
-                                // ㅡ -> |, | -> ㅡ
-                                isVisited[dir][ny1][nx1] = true;
-                                que.offer(new Location(nx1, ny1, now.x2, now.y2));
-                            }
-                        }
-                    } else { // 상, 우, 하, 좌
-                        if (!isValid(nx1, ny1, len, board) || !isValid(nx2, ny2, len, board)) {
+                    if (dir % 2 == 0) {  // 회전 X
+                        if (!isValid(nx1, ny1, board) || !isValid(nx2, ny2, board)) {
                             continue;
                         }
 
-                        if (isVisited[dir][ny1][nx1] && isVisited[dir][ny2][nx2]) {
-                            continue;
+                        Location next = new Location(nx1, ny1, nx2, ny2);
+
+                        if (next.isVertical() &&
+                                !(isVisited[VERTICAL][ny1][nx1] && isVisited[VERTICAL][ny2][nx2])) {
+                            isVisited[VERTICAL][ny1][nx1] = isVisited[VERTICAL][ny2][nx2] = true;
+                            que.offer(next);
+                        } else if (!next.isVertical() &&
+                                !(isVisited[HORIZONTAL][ny1][nx1] && isVisited[HORIZONTAL][ny2][nx2])) {
+                            isVisited[HORIZONTAL][ny1][nx1] = isVisited[HORIZONTAL][ny2][nx2] = true;
+                            que.offer(next);
                         }
+                    } else { // 회전 O
+                        if (now.x1 == nx2 || now.y1 == ny2) {// x2, y2이 이동
+                            if (!isValid(nx2, ny2, board)) {
+                                continue;
+                            }
 
-                        isVisited[dir][ny1][nx1] = isVisited[dir][ny2][nx2] = true;
-                        que.offer(new Location(nx1, ny1, nx2, ny2));
+                            Location next = new Location(now.x1, now.y1, nx2, ny2);
 
+                            if (next.isVertical()) {
+                                if (board[ny2][now.x2] == 0 && !(isVisited[VERTICAL][now.y1][now.x1]
+                                        && isVisited[VERTICAL][ny2][nx2])) {
+                                    isVisited[VERTICAL][now.y1][now.x1] =
+                                            isVisited[VERTICAL][ny2][nx2] = true;
+                                    que.offer(next);
+                                }
+                            } else {
+                                if (board[now.y2][nx2] == 0 && !(isVisited[HORIZONTAL][now.y1][now.x1]
+                                        && isVisited[HORIZONTAL][ny2][nx2])) {
+                                    isVisited[HORIZONTAL][now.y1][now.x1] =
+                                            isVisited[HORIZONTAL][ny2][nx2] = true;
+                                    que.offer(next);
+                                }
+                            }
+                        } else { // x1, y1이 이동
+                            if (!isValid(nx1, ny1, board)) {
+                                continue;
+                            }
+
+                            Location next = new Location(nx1, ny1, now.x2, now.y2);
+
+                            if (next.isVertical()) {
+                                if (board[ny1][now.x1] == 0 && !(isVisited[VERTICAL][now.y2][now.x2]
+                                        && isVisited[VERTICAL][ny1][nx1])) {
+                                    isVisited[VERTICAL][now.y2][now.x2] =
+                                            isVisited[VERTICAL][ny1][nx1] = true;
+                                    que.offer(next);
+                                }
+                            } else {
+                                if (board[now.y1][nx1] == 0 && !(isVisited[HORIZONTAL][now.y2][now.x2]
+                                        && isVisited[HORIZONTAL][ny1][nx1])) {
+                                    isVisited[HORIZONTAL][now.y2][now.x2] =
+                                            isVisited[HORIZONTAL][ny1][nx1] = true;
+                                    que.offer(next);
+                                }
+                            }
+                        }
                     }
                 }
             }
             // System.out.println();
             L++;
         }
+
         return answer;
     }
 
-    private boolean isValid(int x, int y, int len, int[][] board) {
-        if (x >= 0 && x < len && y >= 0 && y < len && board[y][x] == 0) {
-            return true;
-        }
-        return false;
+    boolean isValid(int x, int y, int[][] board) {
+        int len = board.length;
+        return x >= 0 && x < len && y >= 0 && y < len && board[y][x] == 0;
     }
 
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        Scanner stdIn = new Scanner(System.in);
+        int[][] board = {{0, 0, 0, 1, 1}, {0, 0, 0, 1, 0}, {0, 1, 0, 1, 1}, {1, 1, 0, 0, 1}, {0, 0, 0, 0, 0}};
+        System.out.println(T.solution(board));
+    }
 }
 
 class Location {
@@ -100,10 +132,7 @@ class Location {
         this.y2 = Math.max(y1, y2);
     }
 
-    public boolean isVertical() { // 수직 판단
-        if (this.x1 == this.x2) {
-            return true;
-        }
-        return false;
+    public boolean isVertical() {
+        return this.x1 == this.x2;
     }
 }
