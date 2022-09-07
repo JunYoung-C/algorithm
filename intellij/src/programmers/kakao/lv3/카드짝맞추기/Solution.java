@@ -1,137 +1,148 @@
 package programmers.kakao.lv3.카드짝맞추기;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-class Point {
+class Cursor {
     int x;
     int y;
-    int deleteBit;
-    int selectBit; // 0은 아무것도 선택하지 않은 상태
-    int selectNumber;
+    int targetIndex;
+    boolean isSelected;
 
-    public Point(int x, int y, int deleteBit, int selectBit) {
+    public Cursor(int x, int y, int targetIndex, boolean isSelected) {
         this.x = x;
         this.y = y;
-        this.deleteBit = deleteBit;
-        this.selectBit = selectBit;
+        this.targetIndex = targetIndex;
+        this.isSelected = isSelected;
     }
 
-    public Point(int x, int y, int deleteBit, int selectBit, int selectNumber) {
-        this.x = x;
-        this.y = y;
-        this.deleteBit = deleteBit;
-        this.selectBit = selectBit;
-        this.selectNumber = selectNumber;
+    public int getSelectNumber() {
+        return this.isSelected ? 1 : 0;
     }
 }
+
 class Solution {
+    ArrayList<Integer> cardNumbers = new ArrayList<>();
+    boolean[] isUsed;
+    int answer = Integer.MAX_VALUE;
     int[] dx = {0, 1, 0, -1};
     int[] dy = {-1, 0, 1, 0};
 
     public int solution(int[][] board, int r, int c) {
-        int answer = 0;
-        int len = board.length;
-        boolean[][][][] isVisited = new boolean[1 << 6][1 << 16][4][4]; // 삭제 관련 비트, 좌표 선택 관련 비트, y, x
-        Queue<Point> que = new LinkedList<>();
-        int deleteBit = getDeleteBit(board);
-//        System.out.println(deleteBit + " " + Integer.toBinaryString(deleteBit));
-        int L = 0;
-        que.offer(new Point(c, r, deleteBit, 0));
+        initCardNumbers(board);
+        isUsed = new boolean[cardNumbers.size()];
+        permutation(new int[cardNumbers.size()], 0, board, r, c);
+        return answer;
+    }
+
+    private void permutation(int[] orders, int depth, int[][] board, int startRow, int startCol) {
+        if (depth == orders.length) {
+//            for (int i : orders) {
+//                System.out.print(i + " ");
+//            }
+//            System.out.println();
+            answer = Math.min(answer, getMoveCount(orders, board, startRow, startCol));
+            return;
+        }
+
+        for (int i = 0; i < cardNumbers.size(); i++) {
+            if (!isUsed[i]) {
+                isUsed[i] = true;
+                orders[depth] = cardNumbers.get(i);
+                permutation(orders, depth + 1, board, startRow, startCol);
+                isUsed[i] = false;
+            }
+        }
+    }
+
+    private int getMoveCount(int[] orders, int[][] board, int startRow, int startCol) {
+        int count = 0;
+        int index = 0;
+        // 목표 인덱스, 선택 여부(0, 1), 4방향, y, x
+        boolean[][][][] isVisited = new boolean[cardNumbers.size()][2][4][4];
+        boolean[][] isEntered = new boolean[4][4];
+
+        Queue<Cursor> que = new LinkedList<>();
+        que.offer(new Cursor(startCol, startRow, index, false));
+        isVisited[index][0][startCol][startRow] = true;
+
         while (!que.isEmpty()) {
             int size = que.size();
             for (int i = 0; i < size; i++) {
-                Point now = que.poll();
-                System.out.println(now.x + " " + now.y + " " + now.deleteBit + " " + now.selectBit + " " + now.selectNumber);
-                if (now.deleteBit == 0) {
-                    return L;
-                }
+                Cursor now = que.poll();
 
-                if (isVisited[now.deleteBit][now.selectBit][now.y][now.x]) {
-                    continue;
+                if (now.targetIndex == orders.length) {
+                    return count;
                 }
-                isVisited[now.deleteBit][now.selectBit][now.y][now.x] = true;
 
                 // 방향키
                 for (int dir = 0; dir < 4; dir++) {
                     int nx = now.x + dx[dir];
                     int ny = now.y + dy[dir];
-                    if (isValid(nx, ny) && !isVisited[now.deleteBit][now.selectBit][ny][nx]) {
-                        que.offer(new Point(nx, ny, now.deleteBit, now.selectBit, now.selectNumber));
+
+                    if (isValid(nx, ny) && !isVisited[now.targetIndex][now.getSelectNumber()][ny][nx]) {
+                        isVisited[now.targetIndex][now.getSelectNumber()][ny][nx] = true;
+                        que.offer(new Cursor(nx, ny, now.targetIndex, now.isSelected));
                     }
                 }
 
                 // ctrl + 방향키
                 for (int dir = 0; dir < 4; dir++) {
-                    int nx = now.x + dx[dir];
-                    int ny = now.y + dy[dir];
-                    while (isValid(nx, ny)) {
-                        if ((now.deleteBit & (1 << (board[ny][nx] - 1))) != 0) {
-                            break;
-                        }
+                    int nx = now.x;
+                    int ny = now.y;
+
+                    while (isValid(nx + dx[dir], ny + dy[dir])
+                            && isEmpty(board, isEntered, ny + dy[dir], nx + dx[dir])) {
                         nx += dx[dir];
                         ny += dy[dir];
                     }
 
-                    if (isValid(nx, ny) && !isVisited[now.deleteBit][now.selectBit][ny][nx]) {
-                        que.offer(new Point(nx, ny, now.deleteBit, now.selectBit, now.selectNumber));
+                    if ((nx == now.x && ny == now.y) || isVisited[now.targetIndex][now.getSelectNumber()][ny][nx]) {
+                        continue;
                     }
+
+                    isVisited[now.targetIndex][now.getSelectNumber()][ny][nx] = true;
+                    que.offer(new Cursor(nx, ny, now.targetIndex, now.isSelected));
                 }
 
                 // 엔터
-                int pointBit = getPointBit(now.x, now.y);
-                int boardValueBit = 1 << (board[now.y][now.x] - 1);
-
-                if ((now.deleteBit & boardValueBit) > 0 && now.selectBit != pointBit) {
-                    if (now.selectBit == 0 && !isVisited[now.deleteBit][pointBit][now.y][now.x]) {
-                        que.offer(new Point(now.x, now.y, now.deleteBit, pointBit, board[now.y][now.x]));
-                    } else if (now.selectBit != 0 && now.selectNumber == board[now.y][now.x]
-                            && !isVisited[now.deleteBit ^ boardValueBit][0][now.y][now.x]) {
-                        que.offer(new Point(now.x, now.y, now.deleteBit ^ boardValueBit, 0, 0));
+                if (board[now.y][now.x] == orders[now.targetIndex] && !isEntered[now.y][now.x]) {
+                    if (now.isSelected) {
+                        isVisited[now.targetIndex + 1][0][now.y][now.x] = true;
+                        que.offer(new Cursor(now.x, now.y, now.targetIndex + 1, false));
+                    } else {
+                        isVisited[now.targetIndex][1][now.y][now.x] = true;
+                        que.offer(new Cursor(now.x, now.y, now.targetIndex, true));
                     }
+                    isEntered[now.y][now.x] = true;
                 }
-
-//                System.out.println(boardValueBit + " " + now.deleteBit);
-//                if ((now.deleteBit & boardValueBit) > 0) {
-////                    System.out.println(now.deleteBit + " " + boardValueBit + " " + (now.deleteBit ^ boardValueBit));
-//                    if (now.selectBit == 0 && !isVisited[now.deleteBit][board[now.y][now.x]][now.y][now.x]) {
-//                        que.offer(new Point(now.x, now.y, now.deleteBit, board[now.y][now.x]));
-//                    } else if (now.selectBit != 0 && now.selectBit == board[now.y][now.x]
-//                            && !isVisited[now.deleteBit ^ boardValueBit][0][now.y][now.x]) {
-//                        que.offer(new Point(now.x, now.y, now.deleteBit ^ boardValueBit, 0));
-//                    }
-//                }
             }
 
-            System.out.println();
-            L++;
+            count++;
         }
 
-        return answer;
+        return -1;
     }
 
-
-    private int getPointBit(int x, int y) { // 1이상 2^16 - 1이하
-        return 1 << (4 * y + x);
+    private boolean isEmpty(int[][] board, boolean[][] isEntered, int y, int x) {
+        return board[y][x] == 0 || isEntered[y][x];
     }
+
 
     private boolean isValid(int x, int y) {
         return x >= 0 && x < 4 && y >= 0 && y < 4;
     }
 
-    private static int getDeleteBit(int[][] board) {
-        int len = board.length;
-        int deleteBit = 0;
-        for (int r = 0; r < len; r++) {
-            for (int c = 0; c < len; c++) {
-                if (board[r][c] == 0) {
-                    continue;
+    private void initCardNumbers(int[][] board) {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (board[row][col] != 0 && !cardNumbers.contains(board[row][col])) {
+                    cardNumbers.add(board[row][col]);
                 }
-                deleteBit |= 1 << (board[r][c] - 1);
             }
         }
-        return deleteBit;
     }
 
     public static void main(String[] args) {
@@ -141,8 +152,8 @@ class Solution {
 //        int[][] board = {{1,0,0,3},{2,0,0,0},{0,0,0,2},{3,0,1,0}};
 //        int r = 1;
 //        int c = 0;
-        
-        int[][] board = {{3,0,0,2},{0,0,1,0},{0,1,0,0},{2,0,0,3}};
+
+        int[][] board = {{3, 0, 0, 2}, {0, 0, 1, 0}, {0, 1, 0, 0}, {2, 0, 0, 3}};
         int r = 0;
         int c = 1;
         System.out.println(T.solution(board, r, c));
