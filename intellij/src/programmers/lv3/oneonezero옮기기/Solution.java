@@ -1,49 +1,41 @@
 package programmers.lv3.oneonezero옮기기;
 
-import java.util.*;
-
 class Solution {
     public String[] solution(String[] s) {
         int len = s.length;
         String[] answer = new String[len];
-        for (int i = 0; i < len; i++) {
-            String str = s[i];
-            Stack<Character> stack = new Stack<>();
-            int count = 0;
 
+        for (int i = 0; i < len; i++) {
+            StringBuilder sb = new StringBuilder();
+            int count = 0;
             for (char c : s[i].toCharArray()) {
-                if (c == '1') {
-                    stack.push(c);
+                if (c == '0' && sb.length() >= 2
+                        && sb.substring(sb.length() - 2).equals("11")) {
+                    sb.delete(sb.length() - 2, sb.length());
+                    count++;
                 } else {
-                    if (!stack.isEmpty() && stack.peek() == '1') {
-                        stack.pop();
-                        if (!stack.isEmpty() && stack.peek() == '1') {
-                            stack.pop();
-                            count++;
-                        } else {
-                            stack.push('1');
-                            stack.push(c);
-                        }
-                    } else {
-                        stack.push(c);
-                    }
+                    sb.append(c);
                 }
             }
-            StringBuilder sb = new StringBuilder();
-            while (!stack.isEmpty() && stack.peek() != '0') {
-                sb.append(stack.pop());
-            }
+            String oneOneZero = getOneOneZeroString(count);
+            int index = sb.lastIndexOf("0");
 
-            for (int j = 0; j < count; j++) {
-                sb.append("011");
+            if (index == -1) {
+                answer[i] = oneOneZero + sb.toString();
+            } else {
+                sb.insert(index + 1, oneOneZero);
+                answer[i] = sb.toString();
             }
-
-            while (!stack.isEmpty()) {
-                sb.append(stack.pop());
-            }
-
-            answer[i] = sb.reverse().toString();
         }
+
         return answer;
+    }
+
+    private String getOneOneZeroString(int count) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            sb.append("110");
+        }
+        return sb.toString();
     }
 }
