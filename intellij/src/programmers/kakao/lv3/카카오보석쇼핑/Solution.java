@@ -4,20 +4,20 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] gems) {
-        int[] answer = new int[2];
-        answer[0] = 1;
-        answer[1] = 100002;
-        int count = getKindCount(gems);
-        int lt = 0, rt = 0;
         int len = gems.length;
+        int[] answer = {1, len};
+        int typeCount = getTypeCount(gems);
+
+        int lt = 0, rt = 0;
         HashMap<String, Integer> map = new HashMap<>();
         while (rt < len) {
-            if (map.size() < count) {
+            if (map.size() < typeCount) {
                 map.put(gems[rt], map.getOrDefault(gems[rt], 0) + 1);
                 rt++;
-            } else if (map.size() == count) {
-                // System.out.println(lt + 1 + " " + rt);
-                if (answer[1] - answer[0] > rt - lt - 1) {
+            }
+
+            while (map.size() >= typeCount) {
+                if (rt - lt < answer[1] - answer[0] + 1) {
                     answer[0] = lt + 1;
                     answer[1] = rt;
                 }
@@ -27,40 +27,17 @@ class Solution {
                     map.remove(gems[lt]);
                 }
                 lt++;
-            } else {
-                map.put(gems[lt], map.get(gems[lt]) - 1);
-                if (map.get(gems[lt]) == 0) {
-                    map.remove(gems[lt]);
-                }
-                lt++;
             }
         }
-        // if (map.size() == count) {
-        //     System.out.println(lt + 1 + " " + rt);
-        // }
 
-        while (map.size() == count) {
-            if (answer[1] - answer[0] > rt - lt - 1) {
-                answer[0] = lt + 1;
-                answer[1] = rt;
-            }
-
-            map.put(gems[lt], map.get(gems[lt]) - 1);
-            if (map.get(gems[lt]) == 0) {
-                map.remove(gems[lt]);
-            }
-            lt++;
-        }
-
-        // System.out.println(count);
         return answer;
     }
 
-    private int getKindCount(String[] gems) {
+    private int getTypeCount(String[] gems) {
         HashMap<String, Integer> map = new HashMap<>();
 
-        for (String gem : gems) {
-            map.put(gem, map.getOrDefault(gem, 0) + 1);
+        for (String g : gems) {
+            map.put(g, map.getOrDefault(g, 0) + 1);
         }
 
         return map.size();
