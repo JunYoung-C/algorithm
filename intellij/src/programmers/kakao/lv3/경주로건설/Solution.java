@@ -7,24 +7,27 @@ class Solution {
     int[] dy = {-1, 0, 1, 0};
 
     public int solution(int[][] board) {
-        int answer = 0;
+        int answer = Integer.MAX_VALUE;
         int len = board.length;
-        int[][] cache = new int[len][len];
-        for (int i = 0; i < len; i++) {
-            Arrays.fill(cache[i], Integer.MAX_VALUE);
+        Queue<Route> que = new LinkedList<>();
+        int[][][] distance = new int[4][len][len];
+        for (int dir = 0; dir < 4; dir++) {
+            for (int i = 0; i < len; i++) {
+                Arrays.fill(distance[dir][i], Integer.MAX_VALUE);
+            }
         }
-        Queue<Road> que = new LinkedList<>();
-        que.offer(new Road(0, 0, -1, 0));
-        cache[0][0] = 0;
+        for (int dir = 0; dir < 4; dir++) {
+            distance[dir][0][0] = 0;
+        }
+
+        que.offer(new Route(0, 0, -1, 0));
 
         while (!que.isEmpty()) {
-            Road now = que.poll();
+            Route now = que.poll();
 
-            if (cache[now.y][now.x] < now.cost) {
+            if (now.dir != -1 && distance[now.dir][now.y][now.x] < now.cost) {
                 continue;
             }
-
-            // System.out.println(now.x + " " + now.y + " " + cache[now.y][now.x]);
 
             for (int dir = 0; dir < 4; dir++) {
                 int nx = now.x + dx[dir];
@@ -34,32 +37,36 @@ class Solution {
                     continue;
                 }
 
-                int cost = 100;
-                if (now.dir != -1 && dir != now.dir) {
+                int cost = now.cost + 100;
+                if (now.dir != -1 && now.dir != dir) {
                     cost += 500;
                 }
 
-                if (cache[ny][nx] >= now.cost + cost) {
-                    cache[ny][nx] = now.cost + cost;
-                    que.offer(new Road(nx, ny, dir, cache[ny][nx]));
+                if (distance[dir][ny][nx] > cost) {
+                    distance[dir][ny][nx] = cost;
+                    que.offer(new Route(nx, ny, dir, cost));
                 }
-
             }
         }
-        return cache[len - 1][len - 1];
+
+        for (int dir = 0; dir < 4; dir++) {
+            answer = Math.min(answer, distance[dir][len - 1][len - 1]);
+        }
+
+        return answer;
     }
 }
 
-class Road {
+class Route{
     int x;
     int y;
     int dir;
     int cost;
 
-    public Road(int x, int y, int dir, int cost) {
+    public Route(int x, int y, int dir, int cost) {
         this.x = x;
         this.y = y;
-        this.dir =dir;
+        this.dir = dir;
         this.cost = cost;
     }
 }
