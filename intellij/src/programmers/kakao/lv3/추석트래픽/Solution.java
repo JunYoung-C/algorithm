@@ -1,78 +1,96 @@
 package programmers.kakao.lv3.추석트래픽;
 
 import java.util.*;
-import java.text.SimpleDateFormat;
 
 class Solution {
     public int solution(String[] lines) {
         int answer = 0;
-        PriorityQueue<Data> inputQue = new PriorityQueue<>();
-        PriorityQueue<Data> outputQue = new PriorityQueue<>();
+        ArrayList<Process> processes = new ArrayList<>();
+        initProcesses(lines, processes);
+        Collections.sort(processes, (o1, o2) -> o1.startTime - o2.startTime);
 
-        for (int i = 0; i < lines.length; i++) {
-            String[] splitStr = lines[i].split(" ");
-            int outTime = getProcessedTime(splitStr[1]);
-            int inTime = calculateInTime(outTime, splitStr[2]);
-            String dateString = splitStr[0] + " " + splitStr[1];
-            try {
-                Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(dateString);
-                System.out.println(startDate.getTime());
+        ArrayList<Integer> times = createTimeList(processes);
+        Collections.sort(times);
 
-            } catch(Exception e) {
+        PriorityQueue<Process> pQ = new PriorityQueue<>();
+        int index = 0, len = processes.size();
 
-            }
-            inputQue.offer(new Data(i, inTime));
-            outputQue.offer(new Data(i, outTime));
-            System.out.println(inTime + " " + outTime);
-        }
+        // for (int i : times) {
+        //     System.out.print(i + " ");
+        // }
 
-        HashMap<Integer, Boolean> visitMap = new HashMap<>();
-        for (int t = 0; t < 24 * 60 * 60 * 1000; t++) {
-            while (!inputQue.isEmpty() && inputQue.peek().time < t + 1000) {
-                visitMap.put(inputQue.poll().index, true);
+        for (int time : times) {
+            while (index < len && processes.get(index).startTime <= time + 999) {
+                pQ.offer(processes.get(index++));
             }
 
-            while (!outputQue.isEmpty() && outputQue.peek().time < t) {
-                visitMap.remove(outputQue.poll().index);
+            while (!pQ.isEmpty() && pQ.peek().endTime < time) {
+                pQ.poll();
             }
 
-            // if (visitMap.size() == 2) {
-            //     System.out.println(t);
-            //     break;
-            // }
-            answer = Math.max(answer, visitMap.size());
+            answer = Math.max(answer, pQ.size());
         }
 
         return answer;
     }
 
-    private int calculateInTime(int outTime, String process) {
-        int processedTime = (int)(Double.parseDouble(process.substring(0, process.length() - 1)) * 1000);
-        return outTime - processedTime + 1;
+    private void initProcesses(String[] lines, ArrayList<Process> processes) {
+        for (String line : lines) {
+            processes.add(parseProcess(line));
+        }
     }
 
-    private int getProcessedTime(String str) {
-        int time = 0;
-        String[] splitTime = str.split(":");
-        time = Integer.parseInt(splitTime[0]) * 60;
-        time = (Integer.parseInt(splitTime[1]) + time) * 60;
-        time = (int)(time * 1000 + Double.parseDouble(splitTime[2]) * 1000);
+    private ArrayList<Integer> createTimeList(ArrayList<Process> processes) {
+        HashSet<Integer> timeSet = new HashSet<>();
 
-        return time;
+        for (Process process : processes) {
+            timeSet.add(process.startTime);
+            timeSet.add(process.endTime);
+        }
+
+        return new ArrayList<>(timeSet);
+    }
+
+    private Process parseProcess(String input) {
+        String[] splitInput = input.split(" ");
+
+        int endTime = parseTime(splitInput[1]);
+        int startTime = endTime - parseSecond(splitInput[2]) + 1;
+        return new Process(startTime, endTime);
+    }
+
+    private int parseSecond(String secondStr) {
+        secondStr = secondStr.substring(0, secondStr.length() - 1);
+        return (int)(Double.parseDouble(secondStr) * 1000);
+    }
+
+    private int parseTime(String timeStr) {
+        String[] splitTimeStr = timeStr.split(":"); // h, m, s
+
+        int h = Integer.parseInt(splitTimeStr[0]);
+        int m = Integer.parseInt(splitTimeStr[1]);
+        double s = Double.parseDouble(splitTimeStr[2]);
+
+        return (int)((3600 * h + 60 * m + s) * 1000);
     }
 }
 
-class Data implements Comparable<Data> {
-    int index;
-    int time;
+class Process implements Comparable<Process> {
+    int startTime;
+    int endTime;
 
-    public Data(int index, int time) {
-        this.index = index;
-        this.time = time;
+    public Process(int startTime, int endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @Override
-    public int compareTo(Data o) {
-        return this.time - o.time;
+    public int compareTo(Process o) {
+        if (this.endTime == o.endTime) {
+            return this.startTime - o.startTime;
+        }
+
+        return this.endTime - o.endTime;
     }
 }
+
