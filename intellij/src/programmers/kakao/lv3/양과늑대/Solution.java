@@ -4,59 +4,72 @@ import java.util.*;
 
 class Solution {
     int answer = 0;
-    int n;
-    boolean[][] isVisited;
-    ArrayList<ArrayList<Integer>> graph;
+    ArrayList<ArrayList<Node>> graph;
 
     public int solution(int[] info, int[][] edges) {
-        n = info.length;
-        isVisited = new boolean[1 << n][n];
-        graph = createGraph(edges);
-        isVisited[1][0] = true;
-        dfs(info, 0, 0, 0, 0);
-        // System.out.println(1 ^ 2);
+        graph = createGraph(info, edges);
+
+        ArrayList<Integer> visitList = new ArrayList<>();
+        visitList.add(0);
+        dfs(0, 1, 0, visitList);
+
         return answer;
     }
 
-    private void dfs(int[] info, int sheepCount, int wolfCount,
-                     int index, int visitBit) {
-
-        if ((visitBit & (1 << index)) == 0) {
-            if (info[index] == 0) {
-                sheepCount++;
-            } else {
-                wolfCount++;
-            }
-
-            visitBit |= (1 << index);
-        }
-
-        if (sheepCount > wolfCount) {
-            answer = Math.max(answer, sheepCount);
-        } else {
+    private void dfs(int nowIndex, int sheepCount, int wolfCount,
+                     ArrayList<Integer> visitList) {
+        if (sheepCount <= wolfCount) {
             return;
         }
 
-        for (int next : graph.get(index)) {
-            if (!isVisited[visitBit][next]) {
-                isVisited[visitBit][next] = true;
-                dfs(info, sheepCount, wolfCount, next, visitBit);
+        answer = Math.max(sheepCount, answer);
+
+        // visitList의 노드들과 연결된 노드 중 visitList에 없는 곳을 방문해야함
+        for (int visitIndex : visitList) {
+            for (Node next : graph.get(visitIndex)) {
+                if (visitList.contains(next.index)) {
+                    continue;
+                }
+
+                ArrayList<Integer> nextVisitList = new ArrayList<>(visitList);
+                nextVisitList.add(next.index);
+
+                if (next.isWolf()) {
+                    dfs(next.index, sheepCount, wolfCount + 1, nextVisitList);
+                } else {
+                    dfs(next.index, sheepCount + 1, wolfCount, nextVisitList);
+                }
             }
         }
     }
 
-    private ArrayList<ArrayList<Integer>> createGraph(int[][] edges) {
-        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
+    private ArrayList<ArrayList<Node>> createGraph(int[] info, int[][] edges) {
+        ArrayList<ArrayList<Node>> graph = new ArrayList<>();
+
+        for (int i = 0; i <= info.length; i++) {
             graph.add(new ArrayList<>());
         }
 
         for (int[] e : edges) {
-            graph.get(e[0]).add(e[1]);
-            graph.get(e[1]).add(e[0]);
+            graph.get(e[0]).add(new Node(e[1], info[e[1]]));
+            graph.get(e[1]).add(new Node(e[0], info[e[0]]));
         }
 
         return graph;
+    }
+}
+
+class Node {
+    int index;
+    int type;
+
+    public Node(int index, int type) {
+        this.index = index;
+        this.type = type;
+    }
+
+    boolean isWolf() {
+        return this.type == 1;
     }
 }
 
