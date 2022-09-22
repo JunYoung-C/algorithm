@@ -1,78 +1,62 @@
 package programmers.kakao.year2022.양궁대회;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 class Solution {
-    String bestResult = "";
-    int maxPoint = Integer.MIN_VALUE;
-    int[] apeachResult;
+    int len = 11;
+    int[] apeach;
+    int[] answer = new int[len];
+    int maxDif = 0;
 
     public int[] solution(int n, int[] info) {
-        int len = info.length;
-        int[] answer = new int[len];
-        apeachResult = info;
-        setResults(0, "", len, n, n);
+        apeach = info;
 
-        if (maxPoint <= 0) {
+        for (int resultBit = 0; resultBit < (1 << 10); resultBit++) {
+            find(resultBit, n);
+        }
+
+        if (maxDif <= 0) {
             return new int[] {-1};
         }
-        for (int i = 0; i < bestResult.length(); i++) {
-            answer[i] = bestResult.charAt(i) - 'a';
-        }
+
         return answer;
     }
 
-    private void setResults(int depth, String result, int len, int remainArrow, int totalArrow) {
-        if (result.length() >= 12) {
+    private void find(int resultBit, int remainArrow) {
+        int[] lion = new int[len];
+        int pointDif = 0;
+
+        for (int i = 0; i <= 9; i++)  {
+            if (((1 << i) & resultBit) > 0) {
+                lion[i] = apeach[i] + 1;
+                remainArrow -= apeach[i] + 1;
+                pointDif += 10 - i;
+            } else if (apeach[i] != 0) {
+                pointDif -= 10 - i;
+            }
+
+            if (remainArrow < 0) {
+                return;
+            }
+        }
+
+        if (pointDif <= 0) {
             return;
         }
 
-        if (remainArrow == 0) {
-            int point = 0;
+        lion[len - 1] = remainArrow;
 
-            int i = 0;
-            for (; i < result.length(); i++) {
-                int lionArrow = result.charAt(i) - 'a';
-
-                if (lionArrow == 0 && apeachResult[i] == 0) {
-                    continue;
-                }
-
-                if (lionArrow > apeachResult[i]) {
-                    point += 10 - i;
-                } else {
-                    point -= 10 - i;
+        if (maxDif < pointDif) {
+            maxDif = pointDif;
+            answer = lion;
+        } else if (maxDif == pointDif) {
+            // 서로 비교
+            for (int i = len - 1; i >= 0; i--) {
+                if (answer[i] < lion[i]) {
+                    answer = lion;
+                    break;
+                } else if (answer[i] > lion[i]) {
+                    break;
                 }
             }
-
-            for (;i < len; i++) {
-                if (apeachResult[i] > 0) {
-                    point -= 10 - i;
-                }
-            }
-
-            if (maxPoint < point) {
-                maxPoint = point;
-                bestResult = result;
-                // System.out.println(point);
-            } else if (maxPoint == point) {
-                // 비교 후 bestResult 선택
-                if (result.length() > bestResult.length()) {
-                    bestResult = result;
-                } else if (result.length() == bestResult.length()) {
-                    if (result.compareTo(bestResult) <= -1) {
-                        bestResult = result;
-                    }
-                }
-                // System.out.println(point);
-            }
-
-            return;
-        }
-
-        for (char arrow = 'a'; arrow <= remainArrow + 'a'; arrow++) {
-            setResults(depth + 1, result + arrow, len, remainArrow - (arrow - 'a'), totalArrow);
         }
     }
 
@@ -89,11 +73,10 @@ class Solution {
 //        int[] info = {0,0,1,2,0,1,1,1,1,1,1};
 
         int n = 10;
-        int[] info = {0,0,0,0,0,0,0,0,3,4,3};
+        int[] info = {0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3};
 
         for (int i : T.solution(n, info)) {
             System.out.print(i + " ");
         }
     }
 }
-
