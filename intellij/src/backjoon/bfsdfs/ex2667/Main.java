@@ -20,6 +20,7 @@ public class Main {
             for (int c = 0; c < n; c++) {
                 if (board[r][c] == 1 && !isVisited[r][c]) {
                     count++;
+                    isVisited[r][c] = true;
                     houseCounts.add(getHouseCount(new Point(c, r), n, board));
                 }
             }
@@ -33,27 +34,19 @@ public class Main {
         }
     }
 
-    private int getHouseCount(Point start, int n, int[][] board) {
-        int count = 0;
-        isVisited[start.y][start.x] = true;
-        Queue<Point> que = new LinkedList<>();
-        que.offer(new Point(start.x, start.y));
+    private int getHouseCount(Point current, int n, int[][] board) {
+        int count = 1;
 
-        while (!que.isEmpty()) {
-            Point now = que.poll();
-            count++;
+        for (int dir = 0; dir < 4; dir++) {
+            int nx = current.x + dx[dir];
+            int ny = current.y + dy[dir];
 
-            for (int dir = 0; dir < 4; dir++) {
-                int nx = now.x + dx[dir];
-                int ny = now.y + dy[dir];
-
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n || isVisited[ny][nx] || board[ny][nx] == 0) {
-                    continue;
-                }
-
-                isVisited[ny][nx] = true;
-                que.offer(new Point(nx, ny));
+            if (nx < 0 || nx >= n || ny < 0 || ny >= n || isVisited[ny][nx] || board[ny][nx] == 0) {
+                continue;
             }
+
+            isVisited[ny][nx] = true;
+            count += getHouseCount(new Point(nx, ny), n, board);
         }
 
         return count;
