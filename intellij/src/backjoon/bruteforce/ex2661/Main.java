@@ -1,4 +1,4 @@
-package backjoon.bruteforce.좋은수열;
+package backjoon.bruteforce.ex2661;
 
 import java.util.Scanner;
 
