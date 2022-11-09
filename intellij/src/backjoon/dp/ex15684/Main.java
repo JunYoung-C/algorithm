@@ -29,9 +29,15 @@ public class Main {
 
     private void dfs(int lastX, int lastY, int addedLineCount, int width, int height) {
         // i번이 i인지 체크
+//        for (int i = 1; i <= height; i++) {
+//            for (int j = 1; j <= width; j++) {
+//                System.out.print((existLadder[i][j] ? 1 : 0) + " ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println(addedLineCount);
         if (canBeAnswer(width, height)) {
             answer = Math.min(answer, addedLineCount);
-            return;
         }
 
         if (addedLineCount >= 3) {
@@ -39,7 +45,7 @@ public class Main {
         }
 
         for (int y = lastY; y <= height; y++) {
-            for (int x = lastX + 1; x <= width; x++) {
+            for (int x = (y == lastY ? lastX + 1 : 1); x <= width; x++) {
                 if (canInstall(y, x, width)) {
                     existLadder[y][x] = true;
                     dfs(x, y, addedLineCount + 1, width, height);
@@ -54,9 +60,9 @@ public class Main {
             int index = x;
 
             for (int y = 1; y <= height; y++) {
-                if (existLadder[y][x]) {
+                if (existLadder[y][index]) {
                     index++;
-                } else if (existLadder[y][x - 1]) {
+                } else if (existLadder[y][index - 1]) {
                     index--;
                 }
             }
@@ -64,6 +70,7 @@ public class Main {
             if (x != index) {
                 return false;
             }
+//            System.out.print(x + " ");
         }
 
         return true;
