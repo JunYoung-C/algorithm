@@ -1,4 +1,4 @@
-package backjoon.dp.ex15684;
+package backjoon.bruteforce.ex15684;
 
 import java.io.*;
 import java.util.ArrayList;
