@@ -11,6 +11,7 @@ public class Main {
         int[] sum = createSumArr(n, arr);
 
         for (int i = 1; i <= n; i++) {
+            dp[1][i] = dp[1][i - 1];
             for (int j = 0; j < i; j++) {
                 dp[1][i] = Math.max(dp[1][i], sum[i] - sum[j]);
             }
@@ -18,22 +19,27 @@ public class Main {
 
         for (int step = 2; step <= m; step++) {
             for (int i = 3; i <= n; i++) {
-                if (dp[step][i - 1] != MIN) {
-                    dp[step][i] = Math.max(dp[step][i - 1], dp[step][i - 1] + arr[i]);
-                }
+                dp[step][i] = dp[step][i - 1];
 
-                if (dp[step - 1][i - 2] != MIN) {
-                    dp[step][i] = Math.max(dp[step][i], dp[step - 1][i - 2] + arr[i]);
+                for (int j = i - 2; j >= 1; j--) {
+                    if (dp[step - 1][j] != MIN) {
+                        dp[step][i] = Math.max(dp[step][i], dp[step - 1][j] + sum[i] - sum[j + 1]);
+                    }
                 }
             }
         }
 
-        for (int i = 1; i <= m; i++) {
-            for (int j = 0; j <= n; j++) {
-                System.out.print((dp[i][j] == MIN ? "-" : dp[i][j]) + " ");
-            }
-            System.out.println();
-        }
+//        for (int i : arr) {
+//            System.out.print(i + "\t");
+//        }
+//        System.out.println();
+//
+//        for (int i = 1; i <= m; i++) {
+//            for (int j = 0; j <= n; j++) {
+//                System.out.print((dp[i][j] == MIN ? "-" : dp[i][j]) + "\t");
+//            }
+//            System.out.println();
+//        }
 
         return dp[m][n];
     }
@@ -41,7 +47,7 @@ public class Main {
     private int[][] createDpArr(int n, int m) {
         int[][] dp = new int[m + 1][n + 1];
         for (int i = 0; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
+            for (int j = 0; j <= n; j++) {
                 dp[i][j] = MIN;
             }
         }
