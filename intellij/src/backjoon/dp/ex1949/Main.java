@@ -12,55 +12,32 @@ public class Main {
     final int O = 1, X = 0;
 
     public int solution(int n, int[][] edges) {
-        int answer = 0;
         graph = createGraph(n, edges);
         dp = new int[2][n + 1];
         for (int i = 1; i <= n; i++) {
             dp[O][i] = people[i];
         }
-        isVisited = new boolean[n + 1];
-        isVisited[1] = true;
-        setDp(-1, -1, 1);
-        for (int i = 0; i < 2; i++) {
-            System.out.print((i == 0 ? "X" : "O") + " ");
-            for (int j = 1; j <= n; j++) {
-                System.out.print(dp[i][j] + "\t");
-            }
-            System.out.println();
-        }
 
         isVisited = new boolean[n + 1];
         isVisited[1] = true;
-        return getMaxPeopleCount(1);
+        dfs(1);
+
+        return Math.max(dp[O][1], dp[X][1]);
     }
 
-    private int getMaxPeopleCount(int now) {
-        int peopleCount = 0;
+    private void dfs(int now) {
         for (int next : graph.get(now)) {
             if (!isVisited[next]) {
                 isVisited[next] = true;
-                peopleCount += getMaxPeopleCount(next);
+                dfs(next);
                 isVisited[next] = false;
             }
         }
 
-        return Math.max(peopleCount, Math.max(dp[O][now], dp[X][now]));
-    }
-
-    private void setDp(int grandParent, int parent, int now) {
-        if (parent != -1) {
-            dp[O][now] = Math.max(dp[O][now], dp[X][parent]);
-            dp[X][now] = Math.max(dp[X][now], dp[O][parent]);
-        }
-        if (grandParent != -1) {
-            dp[O][now] = Math.max(dp[O][now], dp[X][grandParent]);
-        }
-
         for (int next : graph.get(now)) {
             if (!isVisited[next]) {
-                isVisited[next] = true;
-                setDp(parent, now, next);
-                isVisited[next] = false;
+                dp[O][now] += dp[X][next];
+                dp[X][now]  += Math.max(dp[O][next], dp[X][next]);
             }
         }
     }
