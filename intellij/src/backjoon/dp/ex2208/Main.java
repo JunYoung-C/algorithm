@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     public int solution(int n, int min, int[] gems) {
-        int answer = Integer.MIN_VALUE;
+        int answer = 0;
         int[] sum = createSumArr(n, gems);
         int[] dp = new int[n + 1];
 
@@ -18,6 +18,11 @@ public class Main {
         for (int i = min; i <= n; i++) {
             answer = Math.max(answer, dp[i]);
         }
+
+        for (int i = 1; i <= n; i++) {
+            System.out.print(dp[i] + " ");
+        }
+        System.out.println();
 
         return answer;
     }
